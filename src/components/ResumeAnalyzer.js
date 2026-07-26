@@ -68,7 +68,51 @@ export default function ResumeAnalyzer() {
     }
   }
 
+  function handleReset() {
+    setFile(null);
+    setJobDescription("");
+    setResume(null);
+    setAnalysis(null);
+    setError("");
+    setStage("idle");
+  }
+
   const isBusy = stage !== "idle";
+
+  // If we already have a result, show it front-and-center with a way to start over,
+  // rather than leaving the (now stale) form sitting above it.
+  if (analysis) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-neutral-500">
+            Analyzed against:{" "}
+            <span className="font-medium text-neutral-700">
+              {resume?.filename}
+            </span>
+          </div>
+          <button
+            onClick={handleReset}
+            className="text-sm font-medium text-neutral-600 hover:text-neutral-900 underline"
+          >
+            Analyze another
+          </button>
+        </div>
+
+        {resume && (
+          <a
+            href={resume.fileUrl}
+            className="text-sm underline text-neutral-500 hover:text-neutral-900"
+            download
+          >
+            Download original resume
+          </a>
+        )}
+
+        <AnalysisResults analysis={analysis} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -84,8 +128,9 @@ export default function ResumeAnalyzer() {
             id="resume-file"
             type="file"
             accept=".pdf,.docx"
+            disabled={isBusy}
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="w-full text-sm border border-neutral-300 rounded-md px-3 py-2 file:mr-3 file:rounded-md file:border-0 file:bg-neutral-100 file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-neutral-200"
+            className="w-full text-sm border border-neutral-300 rounded-md px-3 py-2 file:mr-3 file:rounded-md file:border-0 file:bg-neutral-100 file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-neutral-200 disabled:opacity-50"
           />
         </div>
 
@@ -96,11 +141,17 @@ export default function ResumeAnalyzer() {
           <textarea
             id="jd"
             rows={8}
+            disabled={isBusy}
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste the full job description here..."
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-50"
           />
+          <p className="text-xs text-neutral-400 mt-1">
+            {jobDescription.trim().length < 30
+              ? `${30 - jobDescription.trim().length} more characters needed`
+              : "Looks good"}
+          </p>
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
@@ -108,41 +159,35 @@ export default function ResumeAnalyzer() {
         <button
           type="submit"
           disabled={isBusy}
-          className="rounded-md bg-neutral-900 text-white text-sm font-medium px-5 py-2.5 hover:bg-neutral-800 disabled:opacity-50"
+          className="rounded-md bg-neutral-900 text-white text-sm font-medium px-5 py-2.5 hover:bg-neutral-800 disabled:opacity-50 inline-flex items-center gap-2"
         >
+          {isBusy && (
+            <span className="h-3.5 w-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+          )}
           {stage === "uploading" && "Uploading resume..."}
           {stage === "analyzing" && "Analyzing against job description..."}
           {stage === "idle" && "Analyze my resume"}
         </button>
       </form>
-
-      {resume && (
-        <div className="text-sm text-neutral-500">
-          Uploaded:{" "}
-          <span className="font-medium text-neutral-700">
-            {resume.filename}
-          </span>{" "}
-          —{" "}
-          <a
-            href={resume.fileUrl}
-            className="underline hover:text-neutral-900"
-            download
-          >
-            download original
-          </a>
-        </div>
-      )}
-
-      {analysis && <AnalysisResults analysis={analysis} />}
     </div>
   );
+}
+
+function scoreColor(score) {
+  if (score >= 75) return "text-green-600";
+  if (score >= 50) return "text-amber-600";
+  return "text-red-600";
 }
 
 function AnalysisResults({ analysis }) {
   return (
     <div className="border border-neutral-200 rounded-lg p-6 space-y-6">
       <div className="flex items-center gap-4">
-        <div className="text-4xl font-semibold">{analysis.matchScore}</div>
+        <div
+          className={`text-4xl font-semibold ${scoreColor(analysis.matchScore)}`}
+        >
+          {analysis.matchScore}
+        </div>
         <div className="text-sm text-neutral-500">
           / 100 match score
           <p className="mt-1">{analysis.summary}</p>
@@ -154,38 +199,50 @@ function AnalysisResults({ analysis }) {
           <h3 className="text-sm font-semibold mb-2 text-green-700">
             Matched skills
           </h3>
-          <ul className="space-y-1">
-            {analysis.matchedSkills?.map((skill, i) => (
-              <li key={i} className="text-sm text-neutral-700">
-                ✓ {skill}
-              </li>
-            ))}
-          </ul>
+          {analysis.matchedSkills?.length ? (
+            <ul className="space-y-1">
+              {analysis.matchedSkills.map((skill, i) => (
+                <li key={i} className="text-sm text-neutral-700">
+                  ✓ {skill}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-neutral-400">None identified</p>
+          )}
         </div>
 
         <div>
           <h3 className="text-sm font-semibold mb-2 text-red-700">
             Missing skills
           </h3>
-          <ul className="space-y-1">
-            {analysis.missingSkills?.map((skill, i) => (
-              <li key={i} className="text-sm text-neutral-700">
-                ✗ {skill}
-              </li>
-            ))}
-          </ul>
+          {analysis.missingSkills?.length ? (
+            <ul className="space-y-1">
+              {analysis.missingSkills.map((skill, i) => (
+                <li key={i} className="text-sm text-neutral-700">
+                  ✗ {skill}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-neutral-400">None — great match!</p>
+          )}
         </div>
       </div>
 
       <div>
         <h3 className="text-sm font-semibold mb-2">Suggestions</h3>
-        <ul className="space-y-2 list-disc list-inside">
-          {analysis.suggestions?.map((suggestion, i) => (
-            <li key={i} className="text-sm text-neutral-700">
-              {suggestion}
-            </li>
-          ))}
-        </ul>
+        {analysis.suggestions?.length ? (
+          <ul className="space-y-2 list-disc list-inside">
+            {analysis.suggestions.map((suggestion, i) => (
+              <li key={i} className="text-sm text-neutral-700">
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-neutral-400">No specific suggestions.</p>
+        )}
       </div>
     </div>
   );
