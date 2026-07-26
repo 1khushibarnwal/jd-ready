@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
+
 import { auth, signOut } from "@/auth";
+import ResumeAnalyzer from "@/components/ResumeAnalyzer";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -33,9 +35,7 @@ export default async function DashboardPage() {
         </form>
       </div>
 
-      <div className="rounded-lg border border-dashed border-neutral-300 p-8 text-center text-neutral-500">
-        Resume upload &amp; JD analysis will live here next.
-      </div>
+      <ResumeAnalyzer />
     </div>
   );
 }
