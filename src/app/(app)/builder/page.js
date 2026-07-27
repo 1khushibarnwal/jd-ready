@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { auth } from "@/auth";
 import { connectDB } from "@/lib/mongodb";
 import ResumeDraft from "@/models/ResumeDraft";
@@ -29,16 +28,8 @@ export default async function BuilderPage() {
   const initialDraft = JSON.parse(JSON.stringify(draft));
 
   return (
-    <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-16">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-semibold">Build your resume</h1>
-        <Link
-          href="/dashboard"
-          className="text-sm font-medium text-neutral-600 hover:text-neutral-900 underline"
-        >
-          Back to dashboard
-        </Link>
-      </div>
+    <div className="max-w-2xl mx-auto w-full px-4 py-12">
+      <h1 className="text-2xl font-semibold mb-8">Build your resume</h1>
 
       <ResumeBuilder initialDraft={initialDraft} />
     </div>

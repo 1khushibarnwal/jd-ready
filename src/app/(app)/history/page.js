@@ -25,16 +25,8 @@ export default async function HistoryPage() {
     .lean();
 
   return (
-    <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-16">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-semibold">Your analysis history</h1>
-        <Link
-          href="/dashboard"
-          className="text-sm font-medium text-neutral-600 hover:text-neutral-900 underline"
-        >
-          Back to dashboard
-        </Link>
-      </div>
+    <div className="max-w-2xl mx-auto w-full px-4 py-12">
+      <h1 className="text-2xl font-semibold mb-8">Your analysis history</h1>
 
       {analyses.length === 0 ? (
         <div className="rounded-lg border border-dashed border-neutral-300 p-8 text-center text-neutral-500">
