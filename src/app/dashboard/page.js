@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-
+import Link from "next/link";
 import { auth, signOut } from "@/auth";
 import ResumeAnalyzer from "@/components/ResumeAnalyzer";
 
@@ -20,19 +20,35 @@ export default async function DashboardPage() {
           <p className="text-sm text-neutral-500">{session.user.email}</p>
         </div>
 
-        <form
-          action={async () => {
-            "use server";
-            await signOut({ redirectTo: "/login" });
-          }}
-        >
-          <button
-            type="submit"
+        <div className="flex items-center gap-4">
+          <Link
+            href="/builder"
             className="text-sm font-medium text-neutral-600 hover:text-neutral-900 underline"
           >
-            Log out
-          </button>
-        </form>
+            Build a resume
+          </Link>
+
+          <Link
+            href="/history"
+            className="text-sm font-medium text-neutral-600 hover:text-neutral-900 underline"
+          >
+            History
+          </Link>
+
+          <form
+            action={async () => {
+              "use server";
+              await signOut({ redirectTo: "/login" });
+            }}
+          >
+            <button
+              type="submit"
+              className="text-sm font-medium text-neutral-600 hover:text-neutral-900 underline"
+            >
+              Log out
+            </button>
+          </form>
+        </div>
       </div>
 
       <ResumeAnalyzer />

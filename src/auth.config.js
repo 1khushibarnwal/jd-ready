@@ -8,7 +8,10 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isProtectedRoute = nextUrl.pathname.startsWith("/dashboard");
+      const isProtectedRoute =
+        nextUrl.pathname.startsWith("/dashboard") ||
+        nextUrl.pathname.startsWith("/history") ||
+        nextUrl.pathname.startsWith("/builder");
 
       if (isProtectedRoute) {
         return isLoggedIn; // false triggers an automatic redirect to `pages.signIn`
