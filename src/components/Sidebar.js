@@ -18,6 +18,7 @@ export default function Sidebar({ user, recentAnalyses }) {
   const navItems = [
     { href: "/dashboard", label: "Analyze resume" },
     { href: "/builder", label: "Build a resume" },
+    { href: "/cover-letter", label: "Cover letter" },
   ];
 
   return (

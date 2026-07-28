@@ -11,7 +11,8 @@ export const authConfig = {
       const isProtectedRoute =
         nextUrl.pathname.startsWith("/dashboard") ||
         nextUrl.pathname.startsWith("/history") ||
-        nextUrl.pathname.startsWith("/builder");
+        nextUrl.pathname.startsWith("/builder") ||
+        nextUrl.pathname.startsWith("/cover-letter");
 
       if (isProtectedRoute) {
         return isLoggedIn; // false triggers an automatic redirect to `pages.signIn`
