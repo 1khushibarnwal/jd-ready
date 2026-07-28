@@ -194,7 +194,16 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
                     {l.resume?.filename || "Deleted resume"}
                   </p>
                   <p className="text-xs text-neutral-500">
-                    {new Date(l.createdAt).toLocaleString()}
+                    {new Date(l.createdAt).toLocaleString("en-IN", {
+                      timeZone: "Asia/Kolkata",
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      hour12: true,
+                    })}
                   </p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
