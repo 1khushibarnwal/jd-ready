@@ -17,6 +17,7 @@ export default function Sidebar({ user, recentAnalyses }) {
 
   const navItems = [
     { href: "/dashboard", label: "Analyze resume" },
+    { href: "/compare", label: "Compare multiple JDs" },
     { href: "/builder", label: "Build a resume" },
     { href: "/cover-letter", label: "Cover letter" },
   ];
@@ -116,7 +117,9 @@ export default function Sidebar({ user, recentAnalyses }) {
                       }`}
                     >
                       <span className="truncate text-neutral-700">
-                        {analysis.resumeFilename || "Deleted resume"}
+                        {analysis.label ||
+                          analysis.resumeFilename ||
+                          "Deleted resume"}
                       </span>
                       <span
                         className={`text-xs font-semibold shrink-0 ${scoreColor(analysis.matchScore)}`}

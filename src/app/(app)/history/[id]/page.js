@@ -31,9 +31,11 @@ export default async function HistoryDetailPage({ params }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-semibold">
-            {analysis.resume?.filename || "Deleted resume"}
+            {analysis.label || analysis.resume?.filename || "Deleted resume"}
           </h1>
           <p className="text-sm text-neutral-500">
+            {analysis.label &&
+              (analysis.resume?.filename || "Deleted resume") + " · "}
             {new Date(analysis.createdAt).toLocaleString()}
           </p>
         </div>

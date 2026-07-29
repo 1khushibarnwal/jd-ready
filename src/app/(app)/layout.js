@@ -23,6 +23,7 @@ export default async function AppLayout({ children }) {
   const recentAnalyses = analyses.map((a) => ({
     _id: a._id.toString(),
     matchScore: a.matchScore,
+    label: a.label || null,
     resumeFilename: a.resume?.filename || null,
   }));
 

@@ -46,7 +46,9 @@ export default async function HistoryPage() {
               >
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-neutral-900 truncate">
-                    {analysis.resume?.filename || "Deleted resume"}
+                    {analysis.label ||
+                      analysis.resume?.filename ||
+                      "Deleted resume"}
                   </p>
                   <p className="text-xs text-neutral-500">
                     {new Date(analysis.createdAt).toLocaleString()}

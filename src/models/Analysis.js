@@ -14,6 +14,7 @@ const AnalysisSchema = new mongoose.Schema(
     missingSkills: [{ type: String }],
     suggestions: [{ type: String }],
     summary: { type: String }, // short overall verdict from the LLM
+    label: { type: String, default: "" }, // optional, e.g. "Google - SWE" — used by the compare tool
   },
   { timestamps: true },
 );

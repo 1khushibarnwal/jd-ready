@@ -13,5 +13,6 @@ export const config = {
     "/history/:path*",
     "/builder/:path*",
     "/cover-letter/:path*",
+    "/compare/:path*",
   ],
 };
