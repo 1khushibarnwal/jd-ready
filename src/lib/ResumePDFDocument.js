@@ -1,71 +1,107 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
-const styles = StyleSheet.create({
-  page: {
+// Three visual variants, all single-column and plain-text — this keeps every
+// template equally ATS-parseable; only spacing/color/weight differ, not structure.
+const TEMPLATES = {
+  minimal: {
+    accentColor: "#1a1a1a",
+    nameSize: 20,
+    bodySize: 10.5,
+    sectionUnderline: true,
     padding: 40,
-    fontSize: 10.5,
-    fontFamily: "Helvetica",
-    color: "#1a1a1a",
-  },
-  name: {
-    fontSize: 20,
-    fontFamily: "Helvetica-Bold",
-    marginBottom: 2,
-  },
-  contactLine: {
-    fontSize: 9.5,
-    color: "#444444",
-    marginBottom: 12,
-  },
-  sectionTitle: {
-    fontSize: 11,
-    fontFamily: "Helvetica-Bold",
-    textTransform: "uppercase",
-    borderBottom: "1 solid #1a1a1a",
-    paddingBottom: 2,
-    marginTop: 12,
-    marginBottom: 6,
-  },
-  summaryText: {
     lineHeight: 1.4,
+    entrySpacing: 8,
   },
-  entryHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 1,
+  modern: {
+    accentColor: "#1b2559",
+    nameSize: 22,
+    bodySize: 10.5,
+    sectionUnderline: true,
+    padding: 44,
+    lineHeight: 1.45,
+    entrySpacing: 9,
   },
-  entryTitle: {
-    fontFamily: "Helvetica-Bold",
+  compact: {
+    accentColor: "#1a1a1a",
+    nameSize: 17,
+    bodySize: 9.5,
+    sectionUnderline: false,
+    padding: 32,
+    lineHeight: 1.25,
+    entrySpacing: 5,
   },
-  entrySubtitle: {
-    fontSize: 10,
-    color: "#333333",
-    marginBottom: 3,
-  },
-  entryDates: {
-    fontSize: 9.5,
-    color: "#555555",
-  },
-  bullet: {
-    flexDirection: "row",
-    marginBottom: 2,
-  },
-  bulletDot: {
-    width: 10,
-  },
-  bulletText: {
-    flex: 1,
-    lineHeight: 1.35,
-  },
-  entryBlock: {
-    marginBottom: 8,
-  },
-  skillsText: {
-    lineHeight: 1.4,
-  },
-});
+};
 
 export default function ResumePDFDocument({ draft }) {
+  const t = TEMPLATES[draft.template] || TEMPLATES.minimal;
+
+  const styles = StyleSheet.create({
+    page: {
+      padding: t.padding,
+      fontSize: t.bodySize,
+      fontFamily: "Helvetica",
+      color: "#1a1a1a",
+    },
+    name: {
+      fontSize: t.nameSize,
+      fontFamily: "Helvetica-Bold",
+      color: t.accentColor,
+      marginBottom: 2,
+    },
+    contactLine: {
+      fontSize: t.bodySize - 1,
+      color: "#444444",
+      marginBottom: t.compact ? 8 : 12,
+    },
+    sectionTitle: {
+      fontSize: t.bodySize + 0.5,
+      fontFamily: "Helvetica-Bold",
+      color: t.accentColor,
+      textTransform: "uppercase",
+      borderBottom: t.sectionUnderline ? `1 solid ${t.accentColor}` : "none",
+      paddingBottom: t.sectionUnderline ? 2 : 0,
+      marginTop: t.entrySpacing + 4,
+      marginBottom: 6,
+    },
+    summaryText: {
+      lineHeight: t.lineHeight,
+    },
+    entryHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 1,
+    },
+    entryTitle: {
+      fontFamily: "Helvetica-Bold",
+    },
+    entrySubtitle: {
+      fontSize: t.bodySize - 0.5,
+      color: "#333333",
+      marginBottom: 3,
+    },
+    entryDates: {
+      fontSize: t.bodySize - 1,
+      color: "#555555",
+    },
+    bullet: {
+      flexDirection: "row",
+      marginBottom: 2,
+    },
+    bulletDot: {
+      width: 10,
+    },
+    bulletText: {
+      flex: 1,
+      lineHeight: t.lineHeight,
+    },
+    entryBlock: {
+      marginBottom: t.entrySpacing,
+    },
+    skillsText: {
+      lineHeight: t.lineHeight,
+    },
+  });
+
   const contactParts = [
     draft.email,
     draft.phone,

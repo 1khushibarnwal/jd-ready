@@ -9,6 +9,10 @@ import {
   Check,
   X,
 } from "lucide-react";
+import { auth } from "@/auth";
+import LandingUserMenu from "@/components/LandingUserMenu";
+
+import Footer from "@/components/Footer";
 
 const features = [
   {
@@ -98,7 +102,9 @@ const faqs = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
   return (
     <div className="bg-background">
       {/* Public header */}
@@ -113,18 +119,26 @@ export default function Home() {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="rounded-md px-4 py-2 text-sm font-medium text-ink-secondary hover:text-ink transition-colors"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-md bg-ink text-surface text-sm font-medium px-4 py-2 hover:opacity-90 transition-opacity"
-            >
-              Get started
-            </Link>
+            {session ? (
+              <LandingUserMenu
+                user={{ name: session.user.name, email: session.user.email }}
+              />
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="rounded-md px-4 py-2 text-sm font-medium text-ink-secondary hover:text-ink transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="rounded-md bg-ink text-surface text-sm font-medium px-4 py-2 hover:opacity-90 transition-opacity"
+                >
+                  Get started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -141,18 +155,29 @@ export default function Home() {
             ATS-friendly resume builder and tailored cover letters built in.
           </p>
           <div className="flex items-center gap-3">
-            <Link
-              href="/signup"
-              className="rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
-            >
-              Get started free
-            </Link>
-            <Link
-              href="/login"
-              className="rounded-md border border-border text-ink text-sm font-medium px-6 py-3 hover:bg-surface transition-colors"
-            >
-              Log in
-            </Link>
+            {session ? (
+              <Link
+                href="/dashboard"
+                className="rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
+              >
+                Go to dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/signup"
+                  className="rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
+                >
+                  Get started free
+                </Link>
+                <Link
+                  href="/login"
+                  className="rounded-md border border-border text-ink text-sm font-medium px-6 py-3 hover:bg-surface transition-colors"
+                >
+                  Log in
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
@@ -183,7 +208,10 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-border">
+      <section
+        id="features"
+        className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-border"
+      >
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink mb-2">
           Everything you need to apply with confidence
         </h2>
@@ -212,7 +240,10 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-border">
+      <section
+        id="how-it-works"
+        className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-border"
+      >
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink mb-10">
           How it works
         </h2>
@@ -232,7 +263,10 @@ export default function Home() {
       </section>
 
       {/* Comparison */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-border">
+      <section
+        id="compare"
+        className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-border"
+      >
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink mb-10">
           JDReady vs. reviewing it yourself
         </h2>
@@ -268,7 +302,10 @@ export default function Home() {
       </section>
 
       {/* FAQ */}
-      <section className="max-w-3xl mx-auto px-4 sm:px-6 py-16 border-t border-border">
+      <section
+        id="faq"
+        className="max-w-3xl mx-auto px-4 sm:px-6 py-16 border-t border-border"
+      >
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink mb-10">
           Frequently asked questions
         </h2>
@@ -298,18 +335,15 @@ export default function Home() {
           Ready to see your match score?
         </h2>
         <Link
-          href="/signup"
+          href={session ? "/dashboard" : "/signup"}
           className="inline-block rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
         >
-          Get started free
+          {session ? "Go to dashboard" : "Get started free"}
         </Link>
       </section>
 
-      <footer className="border-t border-border py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-sm text-ink-secondary">
-          © {new Date().getFullYear()} JDReady.
-        </div>
-      </footer>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

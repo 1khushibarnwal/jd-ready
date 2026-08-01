@@ -14,5 +14,6 @@ export const config = {
     "/builder/:path*",
     "/cover-letter/:path*",
     "/compare/:path*",
+    "/account/:path*",
   ],
 };

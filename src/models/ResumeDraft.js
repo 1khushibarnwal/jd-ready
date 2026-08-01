@@ -45,6 +45,11 @@ const ResumeDraftSchema = new mongoose.Schema(
     linkedin: { type: String, default: "" },
     portfolio: { type: String, default: "" },
     summary: { type: String, default: "" },
+    template: {
+      type: String,
+      enum: ["minimal", "modern", "compact"],
+      default: "minimal",
+    },
     experience: [ExperienceSchema],
     education: [EducationSchema],
     skills: [{ type: String }],

@@ -17,6 +17,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  Settings,
 } from "lucide-react";
 import { logoutAction } from "@/app/actions";
 
@@ -127,6 +128,14 @@ export default function Navbar({ user }) {
                     {user.email}
                   </p>
                 </div>
+                <Link
+                  href="/account"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-ink hover:bg-background transition-colors"
+                >
+                  <Settings size={15} />
+                  Account settings
+                </Link>
                 <form action={logoutAction}>
                   <button
                     type="submit"
@@ -183,6 +192,15 @@ export default function Navbar({ user }) {
               </p>
             </div>
 
+            <Link
+              href="/account"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-medium text-ink-secondary"
+            >
+              <Settings size={16} />
+              Account settings
+            </Link>
+
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -196,7 +214,7 @@ export default function Navbar({ user }) {
             <form action={logoutAction}>
               <button
                 type="submit"
-                className="w-full flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-medium text-danger"
+                className="w-full flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-medium text-danger *:hover:bg-background transition-colors *:hover:text-danger cursor-pointer *:focus:outline-none *:focus:ring-2 *:focus:ring-ink"
               >
                 <LogOut size={16} />
                 Log out

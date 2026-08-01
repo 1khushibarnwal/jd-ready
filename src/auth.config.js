@@ -13,7 +13,8 @@ export const authConfig = {
         nextUrl.pathname.startsWith("/history") ||
         nextUrl.pathname.startsWith("/builder") ||
         nextUrl.pathname.startsWith("/cover-letter") ||
-        nextUrl.pathname.startsWith("/compare");
+        nextUrl.pathname.startsWith("/compare") ||
+        nextUrl.pathname.startsWith("/account");
 
       if (isProtectedRoute) {
         return isLoggedIn; // false triggers an automatic redirect to `pages.signIn`

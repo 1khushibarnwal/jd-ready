@@ -29,6 +29,7 @@ export default function ResumeBuilder({ initialDraft }) {
     linkedin: initialDraft.linkedin || "",
     portfolio: initialDraft.portfolio || "",
     summary: initialDraft.summary || "",
+    template: initialDraft.template || "minimal",
     experience: initialDraft.experience?.length ? initialDraft.experience : [],
     education: initialDraft.education?.length ? initialDraft.education : [],
     projects: initialDraft.projects?.length ? initialDraft.projects : [],
@@ -211,6 +212,49 @@ export default function ResumeBuilder({ initialDraft }) {
           {downloading ? "Generating PDF..." : "Download PDF"}
         </button>
       </div>
+
+      {/* Template picker */}
+      <Section title="Template">
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { id: "minimal", label: "Minimal", desc: "Clean, understated" },
+            { id: "modern", label: "Modern", desc: "Accent color headers" },
+            { id: "compact", label: "Compact", desc: "Tighter, fits more" },
+          ].map((tpl) => (
+            <button
+              key={tpl.id}
+              type="button"
+              onClick={() => updateField("template", tpl.id)}
+              className={`text-left rounded-lg border p-3 transition-colors ${
+                draft.template === tpl.id
+                  ? "border-ink bg-background"
+                  : "border-border hover:border-ink-secondary"
+              }`}
+            >
+              <div className="h-14 rounded-sm bg-surface border border-border mb-2 p-1.5 flex flex-col gap-1">
+                <div
+                  className={`h-1.5 rounded-sm ${tpl.id === "modern" ? "bg-accent" : "bg-ink"}`}
+                  style={{ width: "50%" }}
+                />
+                <div
+                  className="h-1 rounded-sm bg-border"
+                  style={{ width: "80%" }}
+                />
+                <div
+                  className="h-1 rounded-sm bg-border"
+                  style={{ width: "65%" }}
+                />
+              </div>
+              <p className="text-sm font-medium text-ink">{tpl.label}</p>
+              <p className="text-xs text-ink-secondary">{tpl.desc}</p>
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-ink-secondary mt-2">
+          All templates keep a single-column layout for reliable ATS parsing —
+          only the styling differs.
+        </p>
+      </Section>
 
       {/* Contact info */}
       <Section title="Contact information">
