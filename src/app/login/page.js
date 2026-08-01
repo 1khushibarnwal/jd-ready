@@ -45,13 +45,15 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center px-4 py-16">
+    <div className="flex-1 flex items-center justify-center px-4 py-16 bg-background">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold mb-1">Welcome back</h1>
-        <p className="text-sm text-neutral-500 mb-6">Log in to continue.</p>
+        <h1 className="font-display text-2xl font-semibold mb-1 text-ink">
+          Welcome back
+        </h1>
+        <p className="text-sm text-ink-secondary mb-6">Log in to continue.</p>
 
         {justSignedUp && (
-          <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2 mb-4">
+          <p className="text-sm text-success bg-success/10 border border-success/30 rounded-md px-3 py-2 mb-4">
             Account created — log in below.
           </p>
         )}
@@ -67,7 +69,7 @@ function LoginForm() {
               required
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
             />
           </div>
 
@@ -84,27 +86,24 @@ function LoginForm() {
               required
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
             />
           </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-md bg-neutral-900 text-white text-sm font-medium py-2 hover:bg-neutral-800 disabled:opacity-50"
+            className="w-full rounded-md bg-ink text-surface text-sm font-medium py-2 hover:opacity-90 disabled:opacity-50"
           >
             {loading ? "Logging in..." : "Log in"}
           </button>
         </form>
 
-        <p className="text-sm text-neutral-500 mt-6">
+        <p className="text-sm text-ink-secondary mt-6">
           Don&apos;t have an account?{" "}
-          <Link
-            href="/signup"
-            className="text-neutral-900 font-medium underline"
-          >
+          <Link href="/signup" className="text-ink font-medium underline">
             Sign up
           </Link>
         </p>

@@ -30,10 +30,10 @@ export default async function HistoryDetailPage({ params }) {
     <div className="max-w-2xl mx-auto w-full px-4 py-12">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold">
+          <h1 className="font-display text-xl font-semibold text-ink">
             {analysis.label || analysis.resume?.filename || "Deleted resume"}
           </h1>
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-ink-secondary">
             {analysis.label &&
               (analysis.resume?.filename || "Deleted resume") + " · "}
             {new Date(analysis.createdAt).toLocaleString()}
@@ -41,7 +41,7 @@ export default async function HistoryDetailPage({ params }) {
         </div>
         <Link
           href="/history"
-          className="text-sm font-medium text-neutral-600 hover:text-neutral-900 underline shrink-0"
+          className="text-sm font-medium text-ink-secondary hover:text-ink underline shrink-0"
         >
           Back to history
         </Link>
@@ -50,7 +50,7 @@ export default async function HistoryDetailPage({ params }) {
       {analysis.resume?.fileUrl && (
         <a
           href={analysis.resume.fileUrl}
-          className="text-sm underline text-neutral-500 hover:text-neutral-900 block mb-6"
+          className="text-sm underline text-ink-secondary hover:text-ink block mb-6"
           download
         >
           Download original resume
@@ -58,10 +58,10 @@ export default async function HistoryDetailPage({ params }) {
       )}
 
       <details className="mb-6 text-sm">
-        <summary className="cursor-pointer font-medium text-neutral-700 hover:text-neutral-900">
+        <summary className="cursor-pointer font-medium text-ink hover:text-ink">
           View job description
         </summary>
-        <p className="mt-2 text-neutral-600 whitespace-pre-wrap border border-neutral-200 rounded-lg p-4">
+        <p className="mt-2 text-ink-secondary whitespace-pre-wrap border border-border rounded-lg p-4">
           {analysis.jobDescription}
         </p>
       </details>

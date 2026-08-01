@@ -28,7 +28,7 @@ export default async function AppLayout({ children }) {
   }));
 
   return (
-    <div className="flex-1 flex w-full">
+    <div className="flex-1 flex flex-col md:flex-row w-full bg-background">
       <Sidebar
         user={{ name: session.user.name, email: session.user.email }}
         recentAnalyses={recentAnalyses}

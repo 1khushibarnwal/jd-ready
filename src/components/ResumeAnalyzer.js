@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-
 import AnalysisResults from "@/components/AnalysisResults";
 
 export default function ResumeAnalyzer() {
@@ -87,15 +86,13 @@ export default function ResumeAnalyzer() {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-neutral-500">
+          <div className="text-sm text-ink-secondary">
             Analyzed against:{" "}
-            <span className="font-medium text-neutral-700">
-              {resume?.filename}
-            </span>
+            <span className="font-medium text-ink">{resume?.filename}</span>
           </div>
           <button
             onClick={handleReset}
-            className="text-sm font-medium text-neutral-600 hover:text-neutral-900 underline"
+            className="text-sm font-medium text-ink-secondary hover:text-ink underline"
           >
             Analyze another
           </button>
@@ -104,7 +101,7 @@ export default function ResumeAnalyzer() {
         {resume && (
           <a
             href={resume.fileUrl}
-            className="text-sm underline text-neutral-500 hover:text-neutral-900"
+            className="text-sm underline text-ink-secondary hover:text-ink"
             download
           >
             Download original resume
@@ -132,7 +129,7 @@ export default function ResumeAnalyzer() {
             accept=".pdf,.docx"
             disabled={isBusy}
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="w-full text-sm border border-neutral-300 rounded-md px-3 py-2 file:mr-3 file:rounded-md file:border-0 file:bg-neutral-100 file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-neutral-200 disabled:opacity-50"
+            className="w-full text-sm border border-border rounded-md px-3 py-2 file:mr-3 file:rounded-md file:border-0 file:bg-background file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-border disabled:opacity-50"
           />
         </div>
 
@@ -147,24 +144,24 @@ export default function ResumeAnalyzer() {
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste the full job description here..."
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-50"
+            className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink disabled:opacity-50"
           />
-          <p className="text-xs text-neutral-400 mt-1">
+          <p className="text-xs text-ink-secondary mt-1">
             {jobDescription.trim().length < 30
               ? `${30 - jobDescription.trim().length} more characters needed`
               : "Looks good"}
           </p>
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-danger">{error}</p>}
 
         <button
           type="submit"
           disabled={isBusy}
-          className="rounded-md bg-neutral-900 text-white text-sm font-medium px-5 py-2.5 hover:bg-neutral-800 disabled:opacity-50 inline-flex items-center gap-2"
+          className="rounded-md bg-ink text-surface text-sm font-medium px-5 py-2.5 hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2"
         >
           {isBusy && (
-            <span className="h-3.5 w-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+            <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin" />
           )}
           {stage === "uploading" && "Uploading resume..."}
           {stage === "analyzing" && "Analyzing against job description..."}

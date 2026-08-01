@@ -29,7 +29,9 @@ export default async function BuilderPage() {
 
   return (
     <div className="max-w-2xl mx-auto w-full px-4 py-12">
-      <h1 className="text-2xl font-semibold mb-8">Build your resume</h1>
+      <h1 className="font-display text-2xl font-semibold text-ink mb-8">
+        Build your resume
+      </h1>
 
       <ResumeBuilder initialDraft={initialDraft} />
     </div>

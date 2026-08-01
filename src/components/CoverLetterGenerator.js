@@ -83,10 +83,10 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
 
   if (resumes.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-neutral-300 p-8 text-center text-neutral-500">
+      <div className="rounded-lg border border-dashed border-border p-8 text-center text-ink-secondary">
         You need to analyze a resume first before generating a cover letter —
         head to{" "}
-        <a href="/dashboard" className="underline hover:text-neutral-900">
+        <a href="/dashboard" className="underline hover:text-ink">
           Analyze resume
         </a>{" "}
         and upload one.
@@ -108,7 +108,7 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
             id="resume-select"
             value={resumeId}
             onChange={(e) => setResumeId(e.target.value)}
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
           >
             {resumes.map((r) => (
               <option key={r._id} value={r._id}>
@@ -128,19 +128,19 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste the full job description here..."
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
           />
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-danger">{error}</p>}
 
         <button
           type="submit"
           disabled={generating}
-          className="rounded-md bg-neutral-900 text-white text-sm font-medium px-5 py-2.5 hover:bg-neutral-800 disabled:opacity-50 inline-flex items-center gap-2"
+          className="rounded-md bg-ink text-surface text-sm font-medium px-5 py-2.5 hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2"
         >
           {generating && (
-            <span className="h-3.5 w-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+            <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin" />
           )}
           {generating
             ? "Writing your cover letter..."
@@ -149,22 +149,22 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
       </form>
 
       {letter && (
-        <div className="border border-neutral-200 rounded-lg p-6 space-y-4">
+        <div className="border border-border rounded-lg p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide">
+            <h3 className="text-sm font-semibold text-ink-secondary uppercase tracking-wide">
               Generated letter
             </h3>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => handleCopy(letter.content)}
-                className="text-xs font-medium text-neutral-600 hover:text-neutral-900 underline"
+                className="text-xs font-medium text-ink-secondary hover:text-ink underline"
               >
                 {copied ? "Copied!" : "Copy text"}
               </button>
               <button
                 onClick={() => handleDownload(letter._id)}
                 disabled={downloadingId === letter._id}
-                className="text-xs font-medium text-neutral-600 hover:text-neutral-900 underline disabled:opacity-50"
+                className="text-xs font-medium text-ink-secondary hover:text-ink underline disabled:opacity-50"
               >
                 {downloadingId === letter._id
                   ? "Generating..."
@@ -172,7 +172,7 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
               </button>
             </div>
           </div>
-          <p className="text-sm text-neutral-700 whitespace-pre-wrap leading-relaxed">
+          <p className="text-sm text-ink whitespace-pre-wrap leading-relaxed">
             {letter.content}
           </p>
         </div>
@@ -180,43 +180,34 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
 
       {letters.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 mb-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-secondary mb-3">
             Past cover letters
           </h3>
           <ul className="space-y-2">
             {letters.map((l) => (
               <li
                 key={l._id}
-                className="flex items-center justify-between gap-4 border border-neutral-200 rounded-lg px-4 py-3"
+                className="flex items-center justify-between gap-4 border border-border rounded-lg px-4 py-3"
               >
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-neutral-900 truncate">
+                  <p className="text-sm font-medium text-ink truncate">
                     {l.resume?.filename || "Deleted resume"}
                   </p>
-                  <p className="text-xs text-neutral-500">
-                    {new Date(l.createdAt).toLocaleString("en-IN", {
-                      timeZone: "Asia/Kolkata",
-                      day: "numeric",
-                      month: "numeric",
-                      year: "numeric",
-                      hour: "numeric",
-                      minute: "2-digit",
-                      second: "2-digit",
-                      hour12: true,
-                    })}
+                  <p className="text-xs text-ink-secondary">
+                    {new Date(l.createdAt).toLocaleString()}
                   </p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
                   <button
                     onClick={() => setLetter(l)}
-                    className="text-xs font-medium text-neutral-600 hover:text-neutral-900 underline"
+                    className="text-xs font-medium text-ink-secondary hover:text-ink underline"
                   >
                     View
                   </button>
                   <button
                     onClick={() => handleDownload(l._id)}
                     disabled={downloadingId === l._id}
-                    className="text-xs font-medium text-neutral-600 hover:text-neutral-900 underline disabled:opacity-50"
+                    className="text-xs font-medium text-ink-secondary hover:text-ink underline disabled:opacity-50"
                   >
                     {downloadingId === l._id ? "..." : "Download"}
                   </button>

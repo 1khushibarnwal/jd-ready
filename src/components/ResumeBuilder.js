@@ -194,11 +194,11 @@ export default function ResumeBuilder({ initialDraft }) {
   return (
     <div className="space-y-10 pb-16">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-ink-secondary">
           {saveState === "saving" && "Saving..."}
           {saveState === "saved" && "All changes saved"}
           {saveState === "error" && (
-            <span className="text-red-600">
+            <span className="text-danger">
               Couldn&apos;t save — check your connection
             </span>
           )}
@@ -206,7 +206,7 @@ export default function ResumeBuilder({ initialDraft }) {
         <button
           onClick={handleDownload}
           disabled={downloading}
-          className="rounded-md bg-neutral-900 text-white text-sm font-medium px-5 py-2.5 hover:bg-neutral-800 disabled:opacity-50"
+          className="rounded-md bg-ink text-surface text-sm font-medium px-5 py-2.5 hover:opacity-90 disabled:opacity-50"
         >
           {downloading ? "Generating PDF..." : "Download PDF"}
         </button>
@@ -255,7 +255,7 @@ export default function ResumeBuilder({ initialDraft }) {
           value={draft.summary}
           onChange={(e) => updateField("summary", e.target.value)}
           placeholder="2-3 sentences summarizing your experience and strengths..."
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+          className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
         />
       </Section>
 
@@ -269,12 +269,12 @@ export default function ResumeBuilder({ initialDraft }) {
           {draft.experience.map((exp, i) => (
             <div
               key={i}
-              className="border border-neutral-200 rounded-lg p-4 space-y-3"
+              className="border border-border rounded-lg p-4 space-y-3"
             >
               <div className="flex justify-end">
                 <button
                   onClick={() => removeExperience(i)}
-                  className="text-xs text-red-600 hover:underline"
+                  className="text-xs text-danger hover:underline"
                 >
                   Remove
                 </button>
@@ -309,7 +309,7 @@ export default function ResumeBuilder({ initialDraft }) {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-xs font-medium text-ink-secondary mb-1">
                   Bullet points
                 </label>
                 <div className="space-y-2">
@@ -321,11 +321,11 @@ export default function ResumeBuilder({ initialDraft }) {
                           updateExperienceBullet(i, j, e.target.value)
                         }
                         placeholder="Describe an achievement or responsibility..."
-                        className="flex-1 rounded-md border border-neutral-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                        className="flex-1 rounded-md border border-border px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
                       />
                       <button
                         onClick={() => removeExperienceBullet(i, j)}
-                        className="text-xs text-neutral-400 hover:text-red-600 px-1"
+                        className="text-xs text-ink-secondary hover:text-danger px-1"
                       >
                         ✕
                       </button>
@@ -334,7 +334,7 @@ export default function ResumeBuilder({ initialDraft }) {
                 </div>
                 <button
                   onClick={() => addExperienceBullet(i)}
-                  className="text-xs text-neutral-600 hover:text-neutral-900 underline mt-2"
+                  className="text-xs text-ink-secondary hover:text-ink underline mt-2"
                 >
                   + Add bullet
                 </button>
@@ -342,7 +342,9 @@ export default function ResumeBuilder({ initialDraft }) {
             </div>
           ))}
           {draft.experience.length === 0 && (
-            <p className="text-sm text-neutral-400">No experience added yet.</p>
+            <p className="text-sm text-ink-secondary">
+              No experience added yet.
+            </p>
           )}
         </div>
       </Section>
@@ -353,12 +355,12 @@ export default function ResumeBuilder({ initialDraft }) {
           {draft.education.map((edu, i) => (
             <div
               key={i}
-              className="border border-neutral-200 rounded-lg p-4 space-y-3"
+              className="border border-border rounded-lg p-4 space-y-3"
             >
               <div className="flex justify-end">
                 <button
                   onClick={() => removeEducation(i)}
-                  className="text-xs text-red-600 hover:underline"
+                  className="text-xs text-danger hover:underline"
                 >
                   Remove
                 </button>
@@ -390,7 +392,9 @@ export default function ResumeBuilder({ initialDraft }) {
             </div>
           ))}
           {draft.education.length === 0 && (
-            <p className="text-sm text-neutral-400">No education added yet.</p>
+            <p className="text-sm text-ink-secondary">
+              No education added yet.
+            </p>
           )}
         </div>
       </Section>
@@ -405,12 +409,12 @@ export default function ResumeBuilder({ initialDraft }) {
           {draft.projects.map((proj, i) => (
             <div
               key={i}
-              className="border border-neutral-200 rounded-lg p-4 space-y-3"
+              className="border border-border rounded-lg p-4 space-y-3"
             >
               <div className="flex justify-end">
                 <button
                   onClick={() => removeProject(i)}
-                  className="text-xs text-red-600 hover:underline"
+                  className="text-xs text-danger hover:underline"
                 >
                   Remove
                 </button>
@@ -421,7 +425,7 @@ export default function ResumeBuilder({ initialDraft }) {
                 onChange={(v) => updateProject(i, "name", v)}
               />
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-xs font-medium text-ink-secondary mb-1">
                   Description
                 </label>
                 <textarea
@@ -430,27 +434,27 @@ export default function ResumeBuilder({ initialDraft }) {
                   onChange={(e) =>
                     updateProject(i, "description", e.target.value)
                   }
-                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
                 />
               </div>
             </div>
           ))}
           {draft.projects.length === 0 && (
-            <p className="text-sm text-neutral-400">No projects added yet.</p>
+            <p className="text-sm text-ink-secondary">No projects added yet.</p>
           )}
         </div>
       </Section>
 
       {/* Skills */}
       <Section title="Skills">
-        <label className="block text-xs font-medium text-neutral-500 mb-1">
+        <label className="block text-xs font-medium text-ink-secondary mb-1">
           Comma-separated
         </label>
         <input
           value={skillsInput}
           onChange={(e) => updateSkills(e.target.value)}
           placeholder="React, Node.js, MongoDB, ..."
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+          className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
         />
       </Section>
     </div>
@@ -461,13 +465,13 @@ function Section({ title, children, onAdd, addLabel }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-secondary">
           {title}
         </h2>
         {onAdd && (
           <button
             onClick={onAdd}
-            className="text-xs font-medium text-neutral-900 underline"
+            className="text-xs font-medium text-ink underline"
           >
             {addLabel}
           </button>
@@ -481,13 +485,13 @@ function Section({ title, children, onAdd, addLabel }) {
 function Field({ label, value, onChange }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-neutral-500 mb-1">
+      <label className="block text-xs font-medium text-ink-secondary mb-1">
         {label}
       </label>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+        className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
       />
     </div>
   );

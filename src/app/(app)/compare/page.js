@@ -21,10 +21,10 @@ export default async function ComparePage() {
 
   return (
     <div className="max-w-2xl mx-auto w-full px-4 py-12">
-      <h1 className="text-2xl font-semibold mb-1">
+      <h1 className="font-display text-2xl font-semibold text-ink mb-1">
         Compare against multiple jobs
       </h1>
-      <p className="text-sm text-neutral-500 mb-8">
+      <p className="text-sm text-ink-secondary mb-8">
         Pick a resume and paste 2-5 job descriptions to see which one it matches
         best.
       </p>

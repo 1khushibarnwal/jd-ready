@@ -1,19 +1,61 @@
 @import "tailwindcss";
 
+/* Manual dark mode (class-based) instead of Tailwind v4's default OS-media-query
+   behavior — this lets next-themes toggle a `.dark` class on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Indigo & Gold — light mode */
+  --background: #f7f8fa;
+  --surface: #ffffff;
+  --ink: #1b2559;
+  --ink-secondary: #5a6478;
+  --accent: #b8860b;
+  --accent-foreground: #ffffff;
+  --border: #e2e4ea;
+  --success: #1f7a5c;
+  --warning: #b8860b;
+  --danger: #b3261e;
+}
+
+.dark {
+  /* Indigo & Gold — dark mode */
+  --background: #10131c;
+  --surface: #171b29;
+  --ink: #e7e9f0;
+  --ink-secondary: #9aa2b8;
+  --accent: #e8b923;
+  --accent-foreground: #1b2559;
+  --border: #262b3d;
+  --success: #34a37c;
+  --warning: #e8b923;
+  --danger: #e0564c;
 }
 
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
+  --font-mono: var(--font-plex-mono);
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+/* Smooth theme transitions so the light/dark toggle doesn't feel jarring */
+body,
+* {
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
