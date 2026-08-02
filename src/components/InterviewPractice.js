@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
+
 import FormattedText from "@/components/FormattedText";
 import InterviewScoreChart from "@/components/InterviewScoreChart";
+import { useUndoableDelete } from "@/hooks/useUndoableDelete";
+import DeleteRowAction from "@/components/DeleteRowAction";
+import UndoToastStack from "@/components/UndoToastStack";
 
 function scoreColor(score) {
   if (score >= 75) return "text-success";
@@ -17,6 +21,19 @@ export default function InterviewPractice({ resumes, initialSessions }) {
   const [starting, setStarting] = useState(false);
 
   const [pastSessions, setPastSessions] = useState(initialSessions);
+  const {
+    confirmingId: confirmingSessionId,
+    pendingDeletes: pendingSessionDeletes,
+    askConfirm: askConfirmSessionDelete,
+    cancelConfirm: cancelConfirmSessionDelete,
+    confirmDelete: confirmSessionDelete,
+    undo: undoSessionDelete,
+    dismissToast: dismissSessionToast,
+  } = useUndoableDelete({
+    items: pastSessions,
+    setItems: setPastSessions,
+    deleteUrl: (id) => `/api/interview/${id}`,
+  });
   const [stage, setStage] = useState("setup"); // setup | session | round-prompt | summary
   const [activeSession, setActiveSession] = useState(null); // { _id, questions, answers }
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -506,7 +523,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
         </button>
       </form>
 
-      {pastSessions.length > 0 && (
+      {(pastSessions.length > 0 || pendingSessionDeletes.length > 0) && (
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-secondary mb-3">
             Past sessions
@@ -515,28 +532,44 @@ export default function InterviewPractice({ resumes, initialSessions }) {
             {pastSessions.map((s) => (
               <li
                 key={s._id}
-                className="flex items-center justify-between gap-4 border border-border rounded-lg px-4 py-3"
+                className="flex items-center gap-3 border border-border rounded-lg px-4 py-3"
               >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-ink truncate">
-                    {s.resume?.filename || "Deleted resume"}
-                  </p>
-                  <p className="text-xs text-ink-secondary">
-                    {new Date(s.createdAt).toLocaleString()} ·{" "}
-                    {s.questions?.length || 0} questions
-                  </p>
+                <div className="flex-1 min-w-0 flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-ink truncate">
+                      {s.resume?.filename || "Deleted resume"}
+                    </p>
+                    <p className="text-xs text-ink-secondary">
+                      {new Date(s.createdAt).toLocaleString()} ·{" "}
+                      {s.questions?.length || 0} questions
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => viewPastSession(s._id)}
+                    className="text-xs font-medium text-ink-secondary hover:text-ink underline shrink-0"
+                  >
+                    View
+                  </button>
                 </div>
-                <button
-                  onClick={() => viewPastSession(s._id)}
-                  className="text-xs font-medium text-ink-secondary hover:text-ink underline shrink-0"
-                >
-                  View
-                </button>
+
+                <DeleteRowAction
+                  isConfirming={confirmingSessionId === s._id}
+                  onAskConfirm={() => askConfirmSessionDelete(s._id)}
+                  onConfirm={() => confirmSessionDelete(s)}
+                  onCancel={cancelConfirmSessionDelete}
+                />
               </li>
             ))}
           </ul>
         </div>
       )}
+
+      <UndoToastStack
+        pendingDeletes={pendingSessionDeletes}
+        onUndo={undoSessionDelete}
+        onDismiss={dismissSessionToast}
+        message="Session deleted"
+      />
     </div>
   );
 }
