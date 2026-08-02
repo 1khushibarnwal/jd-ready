@@ -8,6 +8,7 @@ import {
   History,
   Check,
   X,
+  MessageCircle,
 } from "lucide-react";
 import { auth } from "@/auth";
 import LandingUserMenu from "@/components/LandingUserMenu";
@@ -40,6 +41,12 @@ const features = [
       "Generate a tailored, professional cover letter from your resume and a job description in seconds.",
   },
   {
+    icon: MessageCircle,
+    title: "Mock interview practice",
+    description:
+      "Answer interview questions tailored to your resume and the role, get feedback on each answer, and keep going round after round.",
+  },
+  {
     icon: History,
     title: "Full history",
     description:
@@ -64,6 +71,11 @@ const steps = [
       "See a match score, the skills you already show, and what's missing.",
   },
   {
+    title: "Practice the interview",
+    description:
+      "Answer tailored questions and get feedback before the real thing.",
+  },
+  {
     title: "Download & apply",
     description:
       "Export an ATS-ready resume and a tailored cover letter, ready to send.",
@@ -74,8 +86,14 @@ const comparisonRows = [
   { label: "Instant match scoring", jdready: true, manual: false },
   { label: "Identifies missing keywords/skills", jdready: true, manual: false },
   { label: "ATS-friendly formatting built in", jdready: true, manual: false },
+  { label: "Choice of resume templates", jdready: true, manual: false },
   { label: "Tailored cover letter generation", jdready: true, manual: false },
   { label: "Compare several roles at once", jdready: true, manual: false },
+  {
+    label: "Mock interview practice with feedback",
+    jdready: true,
+    manual: false,
+  },
   { label: "Takes more than a few minutes", jdready: false, manual: true },
 ];
 
@@ -87,6 +105,14 @@ const faqs = [
   {
     q: "How is the match score calculated?",
     a: "An AI model compares your resume's actual content against the job description and scores the overlap. It's a guide to help you improve your resume — not a guarantee of interview outcomes.",
+  },
+  {
+    q: "Can I choose what my resume looks like?",
+    a: "Yes — the resume builder offers multiple templates (Minimal, Modern, Compact). All of them keep a single-column layout so they stay reliably ATS-parseable; only the styling differs.",
+  },
+  {
+    q: "How does the mock interview practice work?",
+    a: "JDReady generates interview questions tailored to your resume and a job description, mixing behavioral and technical questions. Answer them one at a time and get feedback with a score, strengths, and suggestions — and you can keep going for as many rounds as you'd like.",
   },
   {
     q: "Is my resume data private?",
@@ -343,7 +369,7 @@ export default async function Home() {
       </section>
 
       {/* Footer */}
-      <Footer />
+      <Footer session={session} />
     </div>
   );
 }
