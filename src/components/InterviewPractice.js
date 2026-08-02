@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import FormattedText from "@/components/FormattedText";
+import InterviewScoreChart from "@/components/InterviewScoreChart";
 
 function scoreColor(score) {
   if (score >= 75) return "text-success";
@@ -87,6 +89,22 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       }
 
       setCurrentFeedback(data.feedback);
+
+      // This was the bug: without this, activeSession.answers stays the empty
+      // array from session creation, so the summary screen thinks nothing was
+      // ever answered even though every submission succeeded.
+      setActiveSession((prev) => {
+        const nextAnswers = [...(prev.answers || [])];
+        const existingIndex = nextAnswers.findIndex(
+          (a) => a.questionIndex === currentIndex,
+        );
+        if (existingIndex !== -1) {
+          nextAnswers[existingIndex] = data.feedback;
+        } else {
+          nextAnswers.push(data.feedback);
+        }
+        return { ...prev, answers: nextAnswers };
+      });
     } catch (err) {
       console.error(err);
       setError("Something went wrong. Please try again.");
@@ -204,7 +222,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
                   <ul className="space-y-1">
                     {currentFeedback.strengths.map((s, i) => (
                       <li key={i} className="text-sm text-ink">
-                        ✓ {s}
+                        ✓ <FormattedText text={s} />
                       </li>
                     ))}
                   </ul>
@@ -219,7 +237,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
                   <ul className="space-y-1">
                     {currentFeedback.improvements.map((s, i) => (
                       <li key={i} className="text-sm text-ink">
-                        → {s}
+                        → <FormattedText text={s} />
                       </li>
                     ))}
                   </ul>
@@ -232,7 +250,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
                     Example strong answer
                   </p>
                   <p className="text-sm text-ink-secondary leading-relaxed">
-                    {currentFeedback.modelAnswer}
+                    <FormattedText text={currentFeedback.modelAnswer} />
                   </p>
                 </div>
               )}
@@ -262,6 +280,14 @@ export default function InterviewPractice({ resumes, initialSessions }) {
         )
       : null;
 
+    // Pull together every improvement note across all answered questions,
+    // deduplicated, as a concrete "what to work on" list next to the score chart.
+    const focusAreas = Array.from(
+      new Set(
+        (activeSession.answers || []).flatMap((a) => a.improvements || []),
+      ),
+    ).slice(0, 6);
+
     return (
       <div className="space-y-6">
         <div className="border border-border rounded-lg p-6">
@@ -276,17 +302,33 @@ export default function InterviewPractice({ resumes, initialSessions }) {
               Start new session
             </button>
           </div>
-          {avgScore !== null && (
-            <div className="flex items-center gap-3 mb-2">
-              <span
-                className={`font-mono text-3xl font-semibold ${scoreColor(avgScore)}`}
-              >
-                {avgScore}
-              </span>
-              <span className="text-sm text-ink-secondary">
-                average score across {answeredCount} answered
-              </span>
+
+          {avgScore !== null ? (
+            <div className="grid sm:grid-cols-2 gap-6 items-center">
+              <InterviewScoreChart
+                score={avgScore}
+                answeredCount={answeredCount}
+              />
+
+              {focusAreas.length > 0 && (
+                <div>
+                  <p className="text-sm font-semibold text-ink mb-2">
+                    Focus areas
+                  </p>
+                  <ul className="space-y-1.5">
+                    {focusAreas.map((area, i) => (
+                      <li key={i} className="text-sm text-ink-secondary">
+                        → <FormattedText text={area} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
+          ) : (
+            <p className="text-sm text-ink-secondary">
+              No questions were answered in this session.
+            </p>
           )}
         </div>
 

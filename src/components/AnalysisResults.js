@@ -1,3 +1,5 @@
+import FormattedText from "@/components/FormattedText";
+
 function scoreColor(score) {
   if (score >= 75) return "text-success";
   if (score >= 50) return "text-warning";
@@ -15,7 +17,9 @@ export default function AnalysisResults({ analysis }) {
         </div>
         <div className="text-sm text-ink-secondary">
           / 100 match score
-          <p className="mt-1">{analysis.summary}</p>
+          <p className="mt-1">
+            <FormattedText text={analysis.summary} />
+          </p>
         </div>
       </div>
 
@@ -61,7 +65,7 @@ export default function AnalysisResults({ analysis }) {
           <ul className="space-y-2 list-disc list-inside">
             {analysis.suggestions.map((suggestion, i) => (
               <li key={i} className="text-sm text-ink">
-                {suggestion}
+                <FormattedText text={suggestion} />
               </li>
             ))}
           </ul>

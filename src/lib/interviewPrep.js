@@ -13,7 +13,7 @@ Respond with ONLY a raw JSON object (no markdown fences, no preamble) in exactly
 
 {
   "questions": [
-    { "text": "<the question>", "type": "behavioral" | "technical" }
+    { "text": "<the question, plain text only, no markdown/asterisks/formatting>", "type": "behavioral" | "technical" }
   ]
 }`;
 
@@ -30,8 +30,9 @@ Respond with ONLY a raw JSON object (no markdown fences, no preamble) in exactly
   "modelAnswer": <string — a strong example answer grounded in the candidate's actual resume content>
 }
 
-Be specific and grounded in the actual answer given and the resume provided. Do not invent
-experience the candidate doesn't have.`;
+Write every string field in plain text only — no markdown, no asterisks, no bold/italic
+markers, no headers, no bullet characters. Be specific and grounded in the actual answer
+given and the resume provided. Do not invent experience the candidate doesn't have.`;
 
 export async function generateInterviewQuestions(resumeText, jobDescription) {
   const completion = await groq.chat.completions.create({

@@ -11,7 +11,7 @@ Compare the given resume text against the given job description and respond with
   "summary": <string — 2-3 sentence overall verdict>
 }
 
-Be specific and grounded only in the text provided. Do not invent skills that aren't implied by either document.`;
+Be specific and grounded only in the text provided. Do not invent skills that aren't implied by either document. Write every string field in plain text only — no markdown, no asterisks, no bold/italic markers, no headers.`;
 
 /**
  * Runs a single resume-vs-JD analysis through Groq and returns the parsed result.
