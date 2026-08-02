@@ -34,7 +34,16 @@ Write every string field in plain text only — no markdown, no asterisks, no bo
 markers, no headers, no bullet characters. Be specific and grounded in the actual answer
 given and the resume provided. Do not invent experience the candidate doesn't have.`;
 
-export async function generateInterviewQuestions(resumeText, jobDescription) {
+export async function generateInterviewQuestions(
+  resumeText,
+  jobDescription,
+  existingQuestions = [],
+) {
+  const avoidanceNote =
+    existingQuestions.length > 0
+      ? `\n\nThe candidate has already been asked these questions in this session — generate 6 DIFFERENT questions that don't repeat these in substance:\n${existingQuestions.map((q, i) => `${i + 1}. ${q}`).join("\n")}`
+      : "";
+
   const completion = await groq.chat.completions.create({
     model: "openai/gpt-oss-120b",
     temperature: 0.5,
@@ -43,7 +52,7 @@ export async function generateInterviewQuestions(resumeText, jobDescription) {
       { role: "system", content: QUESTIONS_SYSTEM_PROMPT },
       {
         role: "user",
-        content: `RESUME TEXT:\n${resumeText}\n\nJOB DESCRIPTION:\n${jobDescription}`,
+        content: `RESUME TEXT:\n${resumeText}\n\nJOB DESCRIPTION:\n${jobDescription}${avoidanceNote}`,
       },
     ],
   });

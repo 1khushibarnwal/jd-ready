@@ -17,12 +17,15 @@ export default function InterviewPractice({ resumes, initialSessions }) {
   const [starting, setStarting] = useState(false);
 
   const [pastSessions, setPastSessions] = useState(initialSessions);
-  const [stage, setStage] = useState("setup"); // setup | session | summary
+  const [stage, setStage] = useState("setup"); // setup | session | round-prompt | summary
   const [activeSession, setActiveSession] = useState(null); // { _id, questions, answers }
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answerText, setAnswerText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [currentFeedback, setCurrentFeedback] = useState(null);
+  const [round, setRound] = useState(1);
+  const [continuing, setContinuing] = useState(false);
+  const [continueError, setContinueError] = useState("");
 
   async function handleStart(e) {
     e.preventDefault();
@@ -56,6 +59,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       setCurrentIndex(0);
       setAnswerText("");
       setCurrentFeedback(null);
+      setRound(1);
       setStage("session");
       setPastSessions((prev) => [data.session, ...prev]);
     } catch (err) {
@@ -114,14 +118,53 @@ export default function InterviewPractice({ resumes, initialSessions }) {
   }
 
   function handleNext() {
-    const isLast = currentIndex === activeSession.questions.length - 1;
-    if (isLast) {
-      setStage("summary");
+    const isLastOfKnownBatch =
+      currentIndex === activeSession.questions.length - 1;
+    if (isLastOfKnownBatch) {
+      setStage("round-prompt");
       return;
     }
     setCurrentIndex((i) => i + 1);
     setAnswerText("");
     setCurrentFeedback(null);
+  }
+
+  async function handleContinueRound() {
+    setContinuing(true);
+    setContinueError("");
+
+    try {
+      const res = await fetch(`/api/interview/${activeSession._id}/continue`, {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setContinueError(data.error || "Something went wrong");
+        setContinuing(false);
+        return;
+      }
+
+      const startIndex = data.startIndex;
+      setActiveSession((prev) => ({
+        ...prev,
+        questions: [...prev.questions, ...data.newQuestions],
+      }));
+      setRound((r) => r + 1);
+      setCurrentIndex(startIndex);
+      setAnswerText("");
+      setCurrentFeedback(null);
+      setStage("session");
+    } catch (err) {
+      console.error(err);
+      setContinueError("Something went wrong. Please try again.");
+    } finally {
+      setContinuing(false);
+    }
+  }
+
+  function handleDeclineRound() {
+    setStage("summary");
   }
 
   function handleReset() {
@@ -131,6 +174,8 @@ export default function InterviewPractice({ resumes, initialSessions }) {
     setAnswerText("");
     setCurrentFeedback(null);
     setJobDescription("");
+    setRound(1);
+    setContinueError("");
   }
 
   async function viewPastSession(id) {
@@ -171,7 +216,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       <div className="space-y-6">
         <div className="flex items-center justify-between text-sm text-ink-secondary">
           <span>
-            Question {currentIndex + 1} of {total}
+            Question {currentIndex + 1} of {total} · Round {round}
           </span>
           <span className="uppercase text-xs font-semibold tracking-wide">
             {question.type}
@@ -259,12 +304,54 @@ export default function InterviewPractice({ resumes, initialSessions }) {
                 onClick={handleNext}
                 className="rounded-md bg-ink text-surface text-sm font-medium px-5 py-2.5 hover:opacity-90"
               >
-                {currentIndex === total - 1
-                  ? "Finish & see summary"
+                {currentIndex === activeSession.questions.length - 1
+                  ? "Continue"
                   : "Next question"}
               </button>
             </div>
           )}
+        </div>
+      </div>
+    );
+  }
+
+  // --- Round prompt: keep going or wrap up? ---
+  if (stage === "round-prompt" && activeSession) {
+    return (
+      <div className="border border-border rounded-lg p-8 text-center space-y-4">
+        <p className="font-display text-xl font-semibold text-ink">
+          Nice work finishing round {round}. Want to go for round {round + 1}?
+        </p>
+        <p className="text-sm text-ink-secondary max-w-md mx-auto">
+          You&apos;ll get 6 more questions on the same resume and job
+          description — different questions than what you&apos;ve already
+          answered.
+        </p>
+
+        {continueError && (
+          <p className="text-sm text-danger">{continueError}</p>
+        )}
+
+        <div className="flex items-center justify-center gap-3 pt-2">
+          <button
+            onClick={handleContinueRound}
+            disabled={continuing}
+            className="rounded-md bg-ink text-surface text-sm font-medium px-6 py-2.5 hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2"
+          >
+            {continuing && (
+              <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin" />
+            )}
+            {continuing
+              ? "Preparing round " + (round + 1) + "..."
+              : "Yes, round " + (round + 1)}
+          </button>
+          <button
+            onClick={handleDeclineRound}
+            disabled={continuing}
+            className="rounded-md border border-border text-ink text-sm font-medium px-6 py-2.5 hover:bg-background disabled:opacity-50"
+          >
+            No, show my summary
+          </button>
         </div>
       </div>
     );
