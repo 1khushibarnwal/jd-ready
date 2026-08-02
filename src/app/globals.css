@@ -54,8 +54,24 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Every clickable element should show a pointer cursor — buttons don't get
+   this by default in most browser resets, unlike links. */
+button:not(:disabled),
+[role="button"],
+summary,
+select {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 /* Smooth theme transitions so the light/dark toggle doesn't feel jarring */
 body,
 * {
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }

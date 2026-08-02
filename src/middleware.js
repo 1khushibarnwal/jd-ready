@@ -15,5 +15,6 @@ export const config = {
     "/cover-letter/:path*",
     "/compare/:path*",
     "/account/:path*",
+    "/interview-prep/:path*",
   ],
 };

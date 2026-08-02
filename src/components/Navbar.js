@@ -18,6 +18,7 @@ import {
   X,
   ChevronDown,
   Settings,
+  MessageCircle,
 } from "lucide-react";
 import { logoutAction } from "@/app/actions";
 
@@ -34,6 +35,7 @@ const navItems = [
   { href: "/compare", label: "Compare", icon: Layers },
   { href: "/builder", label: "Builder", icon: FileText },
   { href: "/cover-letter", label: "Cover letter", icon: Mail },
+  { href: "/interview-prep", label: "Interview prep", icon: MessageCircle },
   { href: "/history", label: "History", icon: History },
 ];
 
