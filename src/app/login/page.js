@@ -5,8 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 
-import Footer from "@/components/Footer";
-
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -15,8 +13,6 @@ export default function LoginPage() {
           <LoginForm />
         </Suspense>
       </main>
-
-      <Footer />
     </div>
   );
 }

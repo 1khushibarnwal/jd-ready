@@ -85,14 +85,14 @@ export default function ResumeAnalyzer() {
   if (analysis) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-ink-secondary">
+        <div className="flex items-center justify-between gap-3">
+          <div className="text-sm text-ink-secondary min-w-0 truncate">
             Analyzed against:{" "}
             <span className="font-medium text-ink">{resume?.filename}</span>
           </div>
           <button
             onClick={handleReset}
-            className="text-sm font-medium text-ink-secondary hover:text-ink underline"
+            className="text-sm font-medium text-ink-secondary hover:text-ink underline shrink-0"
           >
             Analyze another
           </button>
@@ -161,7 +161,7 @@ export default function ResumeAnalyzer() {
           className="rounded-md bg-ink text-surface text-sm font-medium px-5 py-2.5 hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2"
         >
           {isBusy && (
-            <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin cursor-not-allowed" />
+            <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin" />
           )}
           {stage === "uploading" && "Uploading resume..."}
           {stage === "analyzing" && "Analyzing against job description..."}

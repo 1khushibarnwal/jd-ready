@@ -49,11 +49,11 @@ export default function DeleteAccountButton() {
         undo.
       </p>
       {error && <p className="text-sm text-danger">{error}</p>}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-center gap-3">
         <button
           onClick={handleDelete}
           disabled={deleting}
-          className="rounded-md bg-danger text-surface text-sm font-medium px-4 py-2 hover:opacity-90 disabled:opacity-50"
+          className="w-full sm:w-auto rounded-md bg-danger text-surface text-sm font-medium px-4 py-2 hover:opacity-90 disabled:opacity-50"
         >
           {deleting ? "Deleting..." : "Yes, delete everything"}
         </button>

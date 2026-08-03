@@ -74,7 +74,7 @@ export default function Navbar({ user }) {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -109,7 +109,7 @@ export default function Navbar({ user }) {
           )}
 
           {/* User menu — desktop */}
-          <div className="hidden md:block relative" ref={menuRef}>
+          <div className="hidden lg:block relative" ref={menuRef}>
             <button
               onClick={() => setMenuOpen((v) => !v)}
               className="flex items-center gap-2 rounded-md pl-1 pr-2 py-1 hover:bg-background transition-colors"
@@ -154,7 +154,7 @@ export default function Navbar({ user }) {
           {/* Hamburger — mobile */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden rounded-md p-2 text-ink-secondary hover:text-ink"
+            className="lg:hidden rounded-md p-2 text-ink-secondary hover:text-ink"
             aria-label="Toggle menu"
           >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -164,7 +164,7 @@ export default function Navbar({ user }) {
 
       {/* Mobile menu panel */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-surface px-4 py-3 space-y-1">
+        <div className="lg:hidden border-t border-border bg-surface px-4 py-3 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -216,7 +216,7 @@ export default function Navbar({ user }) {
             <form action={logoutAction}>
               <button
                 type="submit"
-                className="w-full flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-medium text-danger *:hover:bg-background transition-colors *:hover:text-danger cursor-pointer *:focus:outline-none *:focus:ring-2 *:focus:ring-ink"
+                className="w-full flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-medium text-danger"
               >
                 <LogOut size={16} />
                 Log out

@@ -117,8 +117,6 @@ export default function SignupPage() {
           </p>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

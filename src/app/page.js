@@ -5,15 +5,13 @@ import {
   Layers,
   FileText,
   Mail,
+  MessageCircle,
   History,
   Check,
   X,
-  MessageCircle,
 } from "lucide-react";
 import { auth } from "@/auth";
 import LandingUserMenu from "@/components/LandingUserMenu";
-
-import Footer from "@/components/Footer";
 
 const features = [
   {
@@ -32,7 +30,7 @@ const features = [
     icon: FileText,
     title: "ATS-friendly builder",
     description:
-      "No resume yet? Build one from scratch with a guided form and export a clean, single-column PDF that parses correctly.",
+      "No resume yet? Build one from scratch with a guided form, choose from multiple templates, and export a clean PDF that parses correctly.",
   },
   {
     icon: Mail,
@@ -50,7 +48,7 @@ const features = [
     icon: History,
     title: "Full history",
     description:
-      "Every analysis and cover letter is saved, so you can revisit past results or pick up a draft where you left off.",
+      "Every analysis, cover letter, and interview session is saved, so you can revisit past results any time.",
   },
 ];
 
@@ -116,7 +114,7 @@ const faqs = [
   },
   {
     q: "Is my resume data private?",
-    a: "Your resumes, analyses, and cover letters are only visible to your account. We don't share your data with other users.",
+    a: "Your resumes, analyses, cover letters, and interview sessions are only visible to your account. We don't share your data with other users, and you can permanently delete your account and all associated data at any time from account settings.",
   },
   {
     q: "Do I need an existing resume to use JDReady?",
@@ -124,7 +122,7 @@ const faqs = [
   },
   {
     q: "Can I use JDReady for more than one job application?",
-    a: "Yes. Every resume, analysis, and cover letter is saved to your account, and you can compare one resume against multiple job descriptions at once.",
+    a: "Yes. Every resume, analysis, cover letter, and interview session is saved to your account, and you can compare one resume against multiple job descriptions at once.",
   },
 ];
 
@@ -178,13 +176,14 @@ export default async function Home() {
           <p className="text-lg text-ink-secondary mb-8 leading-relaxed">
             JDReady matches your resume against any job description, shows you
             precisely what&apos;s missing, and helps you fix it — with an
-            ATS-friendly resume builder and tailored cover letters built in.
+            ATS-friendly resume builder, tailored cover letters, and mock
+            interview practice built in.
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-3">
             {session ? (
               <Link
                 href="/dashboard"
-                className="rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
+                className="w-full sm:w-auto text-center rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
               >
                 Go to dashboard
               </Link>
@@ -192,13 +191,13 @@ export default async function Home() {
               <>
                 <Link
                   href="/signup"
-                  className="rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
+                  className="w-full sm:w-auto text-center rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
                 >
                   Get started free
                 </Link>
                 <Link
                   href="/login"
-                  className="rounded-md border border-border text-ink text-sm font-medium px-6 py-3 hover:bg-surface transition-colors"
+                  className="w-full sm:w-auto text-center rounded-md border border-border text-ink text-sm font-medium px-6 py-3 hover:bg-surface transition-colors"
                 >
                   Log in
                 </Link>
@@ -242,7 +241,8 @@ export default async function Home() {
           Everything you need to apply with confidence
         </h2>
         <p className="text-ink-secondary mb-10 max-w-2xl">
-          One place to analyze, build, and tailor your application materials.
+          One place to analyze, build, tailor, and practice for your next
+          application.
         </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((f) => {
@@ -273,7 +273,7 @@ export default async function Home() {
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink mb-10">
           How it works
         </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {steps.map((step, i) => (
             <div key={step.title}>
               <div className="font-mono text-sm font-semibold text-accent mb-2">
@@ -297,7 +297,7 @@ export default async function Home() {
           JDReady vs. reviewing it yourself
         </h2>
         <div className="border border-border rounded-lg overflow-hidden">
-          <div className="grid grid-cols-3 bg-background text-sm font-semibold text-ink">
+          <div className="grid grid-cols-[2fr_1fr_1fr] bg-background text-sm font-semibold text-ink">
             <div className="px-5 py-3">Feature</div>
             <div className="px-5 py-3 text-center">JDReady</div>
             <div className="px-5 py-3 text-center">Manual review</div>
@@ -305,7 +305,7 @@ export default async function Home() {
           {comparisonRows.map((row, i) => (
             <div
               key={row.label}
-              className={`grid grid-cols-3 text-sm ${i % 2 === 1 ? "bg-surface" : ""}`}
+              className={`grid grid-cols-[2fr_1fr_1fr] text-sm items-center ${i % 2 === 1 ? "bg-surface" : ""}`}
             >
               <div className="px-5 py-3 text-ink">{row.label}</div>
               <div className="px-5 py-3 flex justify-center">
@@ -368,8 +368,161 @@ export default async function Home() {
         </Link>
       </section>
 
-      {/* Footer */}
-      <Footer session={session} />
+      <footer className="border-t border-border">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid sm:grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="md:col-span-1 sm:col-span-2">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="flex items-center justify-center h-7 w-7 rounded-md bg-ink text-surface">
+                <FileCheck2 size={15} />
+              </span>
+              <span className="font-display text-lg font-bold text-ink tracking-tight">
+                JDReady
+              </span>
+            </div>
+            <p className="text-sm text-ink-secondary max-w-xs leading-relaxed">
+              Match your resume to any job description, close the gaps, and
+              apply with confidence.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-ink-secondary mb-3">
+              Product
+            </h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a
+                  href="#features"
+                  className="text-ink-secondary hover:text-ink"
+                >
+                  Features
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#how-it-works"
+                  className="text-ink-secondary hover:text-ink"
+                >
+                  How it works
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#compare"
+                  className="text-ink-secondary hover:text-ink"
+                >
+                  Comparison
+                </a>
+              </li>
+              <li>
+                <a href="#faq" className="text-ink-secondary hover:text-ink">
+                  FAQ
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-ink-secondary mb-3">
+              Account
+            </h4>
+            <ul className="space-y-2 text-sm">
+              {session ? (
+                <>
+                  <li>
+                    <Link
+                      href="/dashboard"
+                      className="text-ink-secondary hover:text-ink"
+                    >
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/account"
+                      className="text-ink-secondary hover:text-ink"
+                    >
+                      Account settings
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      href="/signup"
+                      className="text-ink-secondary hover:text-ink"
+                    >
+                      Sign up
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/login"
+                      className="text-ink-secondary hover:text-ink"
+                    >
+                      Log in
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-ink-secondary mb-3">
+              Tools
+            </h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link
+                  href="/dashboard"
+                  className="text-ink-secondary hover:text-ink"
+                >
+                  Analyze resume
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/compare"
+                  className="text-ink-secondary hover:text-ink"
+                >
+                  Compare jobs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/builder"
+                  className="text-ink-secondary hover:text-ink"
+                >
+                  Resume builder
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/cover-letter"
+                  className="text-ink-secondary hover:text-ink"
+                >
+                  Cover letters
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/interview-prep"
+                  className="text-ink-secondary hover:text-ink"
+                >
+                  Interview prep
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-border">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 text-sm text-ink-secondary">
+            © {new Date().getFullYear()} JDReady.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

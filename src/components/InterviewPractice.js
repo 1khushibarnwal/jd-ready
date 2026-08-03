@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-
 import FormattedText from "@/components/FormattedText";
 import InterviewScoreChart from "@/components/InterviewScoreChart";
 import { useUndoableDelete } from "@/hooks/useUndoableDelete";
@@ -349,11 +348,11 @@ export default function InterviewPractice({ resumes, initialSessions }) {
           <p className="text-sm text-danger">{continueError}</p>
         )}
 
-        <div className="flex items-center justify-center gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <button
             onClick={handleContinueRound}
             disabled={continuing}
-            className="rounded-md bg-ink text-surface text-sm font-medium px-6 py-2.5 hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2"
+            className="w-full sm:w-auto rounded-md bg-ink text-surface text-sm font-medium px-6 py-2.5 hover:opacity-90 disabled:opacity-50 inline-flex items-center justify-center gap-2"
           >
             {continuing && (
               <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin" />
@@ -365,7 +364,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
           <button
             onClick={handleDeclineRound}
             disabled={continuing}
-            className="rounded-md border border-border text-ink text-sm font-medium px-6 py-2.5 hover:bg-background disabled:opacity-50"
+            className="w-full sm:w-auto rounded-md border border-border text-ink text-sm font-medium px-6 py-2.5 hover:bg-background disabled:opacity-50"
           >
             No, show my summary
           </button>
