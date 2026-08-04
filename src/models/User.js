@@ -11,6 +11,8 @@ const UserSchema = new mongoose.Schema(
       trim: true,
     },
     password: { type: String, required: true }, // bcrypt hash, never store plain text
+    resetPasswordTokenHash: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
   },
   { timestamps: true },
 );
