@@ -20,7 +20,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata = {
-  title: "JDReady — Resume Analyzer",
+  title: "JDReady",
   description:
     "Match your resume to any job description and get ATS-ready feedback.",
 };

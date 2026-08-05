@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
-  FileCheck2,
   FileSearch,
   Layers,
   FileText,
@@ -21,6 +20,8 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { logoutAction } from "@/app/actions";
+
+import Logo from "@/components/Logo";
 
 function useMounted() {
   return useSyncExternalStore(
@@ -66,7 +67,7 @@ export default function Navbar({ user }) {
         {/* Logo — the first thing that should catch the eye */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <span className="flex items-center justify-center h-8 w-8 rounded-md bg-ink text-surface">
-            <FileCheck2 size={18} />
+            <Logo size={32} />
           </span>
           <span className="font-display text-xl font-bold text-ink tracking-tight">
             JDReady
