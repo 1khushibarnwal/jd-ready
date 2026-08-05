@@ -1,35 +1,20 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "motion/react";
 import { FileCheck2 } from "lucide-react";
 import LandingUserMenu from "@/components/LandingUserMenu";
 
 export default function Header({ session }) {
   return (
-    <motion.header
-      initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{
-        duration: 0.6,
-      }}
-      className="border-b border-border bg-surface backdrop-blur"
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <motion.div
-          className="flex items-center gap-2"
-          whileHover={{
-            scale: 1.03,
-          }}
-        >
-          <span className="flex items-center justify-center h-8 w-8 rounded-md bg-ink text-surface">
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink text-surface shadow-sm">
             <FileCheck2 size={18} />
           </span>
 
-          <span className="font-display text-xl font-bold tracking-tight">
+          <span className="font-display text-xl font-bold tracking-tight text-ink">
             JDReady
           </span>
-        </motion.div>
+        </Link>
 
         <div className="flex items-center gap-3">
           {session ? (
@@ -41,37 +26,23 @@ export default function Header({ session }) {
             />
           ) : (
             <>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <Link
+                href="/login"
+                className="text-sm text-ink-secondary transition-colors hover:text-ink"
               >
-                <Link
-                  href="/login"
-                  className="rounded-md px-4 py-2 text-sm font-medium text-ink-secondary hover:text-ink"
-                >
-                  Log in
-                </Link>
-              </motion.div>
+                Log in
+              </Link>
 
-              <motion.div
-                whileHover={{
-                  scale: 1.05,
-                }}
-                whileTap={{
-                  scale: 0.95,
-                }}
+              <Link
+                href="/signup"
+                className="rounded-lg bg-ink px-5 py-2 text-sm font-medium text-surface transition hover:opacity-90"
               >
-                <Link
-                  href="/signup"
-                  className="rounded-md bg-ink text-surface px-4 py-2 text-sm font-medium"
-                >
-                  Get Started
-                </Link>
-              </motion.div>
+                Get Started
+              </Link>
             </>
           )}
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 }

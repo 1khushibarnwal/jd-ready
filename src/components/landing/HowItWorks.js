@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { steps } from "@/data/landing";
-import { fadeUp, staggerContainer } from "@/components/motion/variants";
+import { fadeUp, staggerContainer } from "@/components/animations/variants";
 
 export default function HowItWorks() {
   return (
