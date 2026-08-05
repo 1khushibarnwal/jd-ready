@@ -10,121 +10,14 @@ import {
   Check,
   X,
 } from "lucide-react";
+
 import { auth } from "@/auth";
 import LandingUserMenu from "@/components/LandingUserMenu";
-
-const features = [
-  {
-    icon: FileSearch,
-    title: "Resume analysis",
-    description:
-      "Upload your resume and a job description to get an instant match score, along with the specific skills you're missing.",
-  },
-  {
-    icon: Layers,
-    title: "Compare multiple jobs",
-    description:
-      "Paste in several job descriptions at once and see, ranked, which role your resume is actually the strongest fit for.",
-  },
-  {
-    icon: FileText,
-    title: "ATS-friendly builder",
-    description:
-      "No resume yet? Build one from scratch with a guided form, choose from multiple templates, and export a clean PDF that parses correctly.",
-  },
-  {
-    icon: Mail,
-    title: "Cover letters",
-    description:
-      "Generate a tailored, professional cover letter from your resume and a job description in seconds.",
-  },
-  {
-    icon: MessageCircle,
-    title: "Mock interview practice",
-    description:
-      "Answer interview questions tailored to your resume and the role, get feedback on each answer, and keep going round after round.",
-  },
-  {
-    icon: History,
-    title: "Full history",
-    description:
-      "Every analysis, cover letter, and interview session is saved, so you can revisit past results any time.",
-  },
-];
-
-const steps = [
-  {
-    title: "Upload or build",
-    description:
-      "Upload an existing resume, or build one from scratch with our guided form.",
-  },
-  {
-    title: "Paste the job description",
-    description:
-      "Drop in the JD you're applying to — or several, if you're comparing options.",
-  },
-  {
-    title: "Get your score & gaps",
-    description:
-      "See a match score, the skills you already show, and what's missing.",
-  },
-  {
-    title: "Practice the interview",
-    description:
-      "Answer tailored questions and get feedback before the real thing.",
-  },
-  {
-    title: "Download & apply",
-    description:
-      "Export an ATS-ready resume and a tailored cover letter, ready to send.",
-  },
-];
-
-const comparisonRows = [
-  { label: "Instant match scoring", jdready: true, manual: false },
-  { label: "Identifies missing keywords/skills", jdready: true, manual: false },
-  { label: "ATS-friendly formatting built in", jdready: true, manual: false },
-  { label: "Choice of resume templates", jdready: true, manual: false },
-  { label: "Tailored cover letter generation", jdready: true, manual: false },
-  { label: "Compare several roles at once", jdready: true, manual: false },
-  {
-    label: "Mock interview practice with feedback",
-    jdready: true,
-    manual: false,
-  },
-  { label: "Takes more than a few minutes", jdready: false, manual: true },
-];
-
-const faqs = [
-  {
-    q: "What file formats can I upload?",
-    a: "JDReady accepts .pdf and .docx resume files. If you don't have one yet, you can build one from scratch instead.",
-  },
-  {
-    q: "How is the match score calculated?",
-    a: "An AI model compares your resume's actual content against the job description and scores the overlap. It's a guide to help you improve your resume — not a guarantee of interview outcomes.",
-  },
-  {
-    q: "Can I choose what my resume looks like?",
-    a: "Yes — the resume builder offers multiple templates (Minimal, Modern, Compact). All of them keep a single-column layout so they stay reliably ATS-parseable; only the styling differs.",
-  },
-  {
-    q: "How does the mock interview practice work?",
-    a: "JDReady generates interview questions tailored to your resume and a job description, mixing behavioral and technical questions. Answer them one at a time and get feedback with a score, strengths, and suggestions — and you can keep going for as many rounds as you'd like.",
-  },
-  {
-    q: "Is my resume data private?",
-    a: "Your resumes, analyses, cover letters, and interview sessions are only visible to your account. We don't share your data with other users, and you can permanently delete your account and all associated data at any time from account settings.",
-  },
-  {
-    q: "Do I need an existing resume to use JDReady?",
-    a: "No — if you don't have one, the built-in resume builder walks you through creating an ATS-friendly resume from scratch.",
-  },
-  {
-    q: "Can I use JDReady for more than one job application?",
-    a: "Yes. Every resume, analysis, cover letter, and interview session is saved to your account, and you can compare one resume against multiple job descriptions at once.",
-  },
-];
+import { faqs, comparisonRows } from "@/data/landing";
+import Header from "@/components/landing/Header";
+import Hero from "@/components/landing/Hero";
+import Features from "@/components/landing/Features";
+import HowItWorks from "@/components/landing/HowItWorks";
 
 export default async function Home() {
   const session = await auth();
@@ -132,161 +25,16 @@ export default async function Home() {
   return (
     <div className="bg-background">
       {/* Public header */}
-      <header className="border-b border-border bg-surface">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <span className="flex items-center justify-center h-8 w-8 rounded-md bg-ink text-surface">
-              <FileCheck2 size={18} />
-            </span>
-            <span className="font-display text-xl font-bold text-ink tracking-tight">
-              JDReady
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            {session ? (
-              <LandingUserMenu
-                user={{ name: session.user.name, email: session.user.email }}
-              />
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="rounded-md px-4 py-2 text-sm font-medium text-ink-secondary hover:text-ink transition-colors"
-                >
-                  Log in
-                </Link>
-                <Link
-                  href="/signup"
-                  className="rounded-md bg-ink text-surface text-sm font-medium px-4 py-2 hover:opacity-90 transition-opacity"
-                >
-                  Get started
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header session={session} />
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-ink mb-5 leading-[1.1]">
-            Know exactly why your resume isn&apos;t landing interviews.
-          </h1>
-          <p className="text-lg text-ink-secondary mb-8 leading-relaxed">
-            JDReady matches your resume against any job description, shows you
-            precisely what&apos;s missing, and helps you fix it — with an
-            ATS-friendly resume builder, tailored cover letters, and mock
-            interview practice built in.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            {session ? (
-              <Link
-                href="/dashboard"
-                className="w-full sm:w-auto text-center rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
-              >
-                Go to dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/signup"
-                  className="w-full sm:w-auto text-center rounded-md bg-ink text-surface text-sm font-medium px-6 py-3 hover:opacity-90 transition-opacity"
-                >
-                  Get started free
-                </Link>
-                <Link
-                  href="/login"
-                  className="w-full sm:w-auto text-center rounded-md border border-border text-ink text-sm font-medium px-6 py-3 hover:bg-surface transition-colors"
-                >
-                  Log in
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Illustrative score card mockup */}
-        <div className="bg-surface border border-border rounded-xl p-6 shadow-sm">
-          <div className="flex items-center gap-4 mb-5">
-            <div className="font-mono text-4xl font-semibold text-success">
-              82
-            </div>
-            <div className="text-sm text-ink-secondary">
-              / 100 match score
-              <p className="mt-1 text-ink">
-                Strong overlap on core skills, with a few gaps worth addressing.
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="font-semibold text-success mb-1.5">Matched</p>
-              <p className="text-ink-secondary">React · Node.js · MongoDB</p>
-            </div>
-            <div>
-              <p className="font-semibold text-danger mb-1.5">Missing</p>
-              <p className="text-ink-secondary">GraphQL · Docker</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Hero session={session} />
 
       {/* Features */}
-      <section
-        id="features"
-        className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-border"
-      >
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink mb-2">
-          Everything you need to apply with confidence
-        </h2>
-        <p className="text-ink-secondary mb-10 max-w-2xl">
-          One place to analyze, build, tailor, and practice for your next
-          application.
-        </p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f) => {
-            const Icon = f.icon;
-            return (
-              <div
-                key={f.title}
-                className="border border-border rounded-lg p-5 bg-surface"
-              >
-                <div className="h-9 w-9 rounded-md bg-background flex items-center justify-center mb-4 text-ink">
-                  <Icon size={18} />
-                </div>
-                <h3 className="font-semibold text-ink mb-1.5">{f.title}</h3>
-                <p className="text-sm text-ink-secondary leading-relaxed">
-                  {f.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+      <Features />
 
       {/* How it works */}
-      <section
-        id="how-it-works"
-        className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-border"
-      >
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink mb-10">
-          How it works
-        </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          {steps.map((step, i) => (
-            <div key={step.title}>
-              <div className="font-mono text-sm font-semibold text-accent mb-2">
-                {String(i + 1).padStart(2, "0")}
-              </div>
-              <h3 className="font-semibold text-ink mb-1.5">{step.title}</h3>
-              <p className="text-sm text-ink-secondary leading-relaxed">
-                {step.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <HowItWorks />
 
       {/* Comparison */}
       <section
