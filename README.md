@@ -44,24 +44,26 @@ Upload your resume and a job description, and get an instant match score, the sk
 
 ## Libraries Used
 
-| Library               | Purpose                                             |
-| --------------------- | --------------------------------------------------- |
-| `next`                | App framework (routing, API routes, middleware)     |
-| `react` / `react-dom` | UI library                                          |
-| `next-auth`           | Authentication (Credentials provider, session/JWT)  |
-| `bcryptjs`            | Password hashing                                    |
-| `mongoose`            | MongoDB object modeling                             |
-| `zod`                 | Request/schema validation                           |
-| `groq-sdk`            | AI analysis, cover letter generation, interview Q&A |
-| `pdf-parse`           | Extracting text from uploaded PDF resumes           |
-| `mammoth`             | Extracting text from uploaded .docx resumes         |
-| `@react-pdf/renderer` | Generating downloadable resume/cover letter PDFs    |
-| `cloudinary`          | Hosting uploaded/generated files                    |
-| `resend`              | Transactional email (password reset)                |
-| `recharts`            | Interview score charts                              |
-| `lucide-react`        | Icon set used throughout the UI                     |
-| `next-themes`         | Light/dark theme toggle with persistence            |
-| `tailwindcss`         | Utility-first CSS framework                         |
+| Library               | Purpose                                                                                     |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| `next`                | App framework (routing, App Router, API routes, middleware)                                 |
+| `react` / `react-dom` | UI library and rendering                                                                    |
+| `next-auth`           | Authentication (Credentials provider, session/JWT)                                          |
+| `bcryptjs`            | Password hashing and verification                                                           |
+| `mongoose`            | MongoDB object modeling and database access                                                 |
+| `zod`                 | Request and schema validation                                                               |
+| `groq-sdk`            | AI-powered resume analysis, cover letter generation, interview practice, and job comparison |
+| `pdf-parse`           | Extracting text from uploaded PDF resumes                                                   |
+| `mammoth`             | Extracting text from uploaded `.docx` resumes                                               |
+| `@react-pdf/renderer` | Generating downloadable resume and cover letter PDFs                                        |
+| `cloudinary`          | Cloud storage for uploaded resumes and generated files                                      |
+| `resend`              | Transactional emails (password reset and account emails)                                    |
+| `recharts`            | Charts and data visualization for analytics                                                 |
+| `lucide-react`        | Modern icon library used throughout the UI                                                  |
+| `react-icons`         | Additional icon packs for UI components                                                     |
+| `motion`              | Animations and page transitions                                                             |
+| `next-themes`         | Light/dark theme support with persistence                                                   |
+| `tailwindcss`         | Utility-first CSS framework                                                                 |
 
 ---
 
@@ -186,3 +188,7 @@ Some improvements planned for future versions of JDReady include:
 ## License
 
 MIT
+
+---
+
+Built with ❤️ by [Khushi Barnwal](https://github.com/1khushibarnwal)

@@ -17,7 +17,7 @@ export default function Features() {
           </p>
         </FadeIn>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 [&>*:last-child:nth-child(3n+1)]:lg:col-start-2">
           {features.map((feature, index) => {
             const Icon = feature.icon;
 
