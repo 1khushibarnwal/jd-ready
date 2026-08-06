@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { FileCheck2 } from "lucide-react";
-import { FaGithub } from "react-icons/fa";
 
 export default function Footer({ session }) {
   return (
@@ -22,7 +21,7 @@ export default function Footer({ session }) {
         </div>
 
         <div>
-          <h3 className="mb-4 font-bold">Product</h3>
+          <h3 className="mb-4 font-semibold">Product</h3>
 
           <ul className="space-y-3 text-sm">
             <li>
@@ -44,7 +43,7 @@ export default function Footer({ session }) {
         </div>
 
         <div>
-          <h3 className="mb-4 font-bold">Account</h3>
+          <h3 className="mb-4 font-semibold">Account</h3>
 
           <ul className="space-y-3 text-sm">
             {session ? (
@@ -72,15 +71,11 @@ export default function Footer({ session }) {
         </div>
 
         <div>
-          <h3 className="mb-4 font-bold">Tools</h3>
+          <h3 className="mb-4 font-semibold">Tools</h3>
 
           <ul className="space-y-3 text-sm">
             <li>
               <Link href="/dashboard">Resume Analysis</Link>
-            </li>
-
-            <li>
-              <Link href="/compare">Compare against JDs</Link>
             </li>
 
             <li>
@@ -99,18 +94,17 @@ export default function Footer({ session }) {
       </div>
 
       <div className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-5 text-sm text-ink-secondary sm:flex-row">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-5 text-sm text-ink-secondary sm:flex-row sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} JDReady</span>
 
-          <a
-            href="https://github.com/1khushibarnwal/jd-ready"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 transition-colors hover:text-ink"
-          >
-            <FaGithub size={16} />
-            View on GitHub
-          </a>
+          <div className="flex gap-5">
+            <Link href="/about" className="hover:text-ink">
+              About
+            </Link>
+            <Link href="/privacy" className="hover:text-ink">
+              Privacy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
