@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FileCheck2 } from "lucide-react";
+import { FaGithub } from "react-icons/fa";
 
 export default function Footer({ session }) {
   return (
@@ -94,8 +95,18 @@ export default function Footer({ session }) {
       </div>
 
       <div className="border-t border-border">
-        <div className="mx-auto max-w-6xl px-4 py-5 text-sm text-ink-secondary">
-          © {new Date().getFullYear()} JDReady
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-5 text-sm text-ink-secondary sm:flex-row">
+          <span>© {new Date().getFullYear()} JDReady</span>
+
+          <a
+            href="https://github.com/1khushibarnwal/jd-ready"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 transition-colors hover:text-ink"
+          >
+            <FaGithub size={16} />
+            View on GitHub
+          </a>
         </div>
       </div>
     </footer>
