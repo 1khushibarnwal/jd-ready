@@ -2,6 +2,7 @@ import {
   FileSearch,
   Layers,
   FileText,
+  Sparkles,
   Mail,
   MessageCircle,
   History,
@@ -27,6 +28,12 @@ export const features = [
       "No resume yet? Build one from scratch with a guided form, choose from multiple templates, and export a clean PDF that parses correctly.",
   },
   {
+    icon: Sparkles,
+    title: "Generate from a job description",
+    description:
+      "Paste a job description and the skills you already know, and get a tailored summary, prioritized skills, and strength bullets — using only what you actually know, never invented experience.",
+  },
+  {
     icon: Mail,
     title: "Cover letters",
     description:
@@ -48,9 +55,9 @@ export const features = [
 
 export const steps = [
   {
-    title: "Upload or build",
+    title: "Upload, build, or generate",
     description:
-      "Upload an existing resume, or build one from scratch with our guided form.",
+      "Upload an existing resume, build one from scratch with our guided form, or generate a starting point from a job description and the skills you know.",
   },
   {
     title: "Paste the job description",
@@ -79,6 +86,11 @@ export const comparisonRows = [
   { label: "Identifies missing keywords/skills", jdready: true, manual: false },
   { label: "ATS-friendly formatting built in", jdready: true, manual: false },
   { label: "Choice of resume templates", jdready: true, manual: false },
+  {
+    label: "Generate resume content from a JD + your skills",
+    jdready: true,
+    manual: false,
+  },
   { label: "Tailored cover letter generation", jdready: true, manual: false },
   { label: "Compare several roles at once", jdready: true, manual: false },
   {
@@ -103,6 +115,10 @@ export const faqs = [
     a: "Yes — the resume builder offers multiple templates (Minimal, Modern, Compact). All of them keep a single-column layout so they stay reliably ATS-parseable; only the styling differs.",
   },
   {
+    q: "Can I generate a resume from just a job description and my skills?",
+    a: "Yes — in the builder, paste a job description and the skills you know, and JDReady drafts a tailored summary, reorders your skills to match the role, and writes a few strength bullets. It only ever works from skills you actually list — it never invents employers, job titles, or experience for you. You can then fill in real experience and education, or edit anything it wrote, before downloading.",
+  },
+  {
     q: "How does the mock interview practice work?",
     a: "JDReady generates interview questions tailored to your resume and a job description, mixing behavioral and technical questions. Answer them one at a time and get feedback with a score, strengths, and suggestions — and you can keep going for as many rounds as you'd like.",
   },
@@ -112,7 +128,7 @@ export const faqs = [
   },
   {
     q: "Do I need an existing resume to use JDReady?",
-    a: "No — if you don't have one, the built-in resume builder walks you through creating an ATS-friendly resume from scratch.",
+    a: "No — if you don't have one, the built-in resume builder walks you through creating an ATS-friendly resume from scratch, or you can generate a starting point from a job description and your skills.",
   },
   {
     q: "Can I use JDReady for more than one job application?",

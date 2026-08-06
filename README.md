@@ -10,6 +10,7 @@ Upload your resume and a job description, and get an instant match score, the sk
 - 📄 **Resume analysis** — upload a resume (.pdf/.docx) and a job description, get an AI-scored match with matched skills, missing skills, and concrete suggestions
 - 📊 **Compare multiple jobs** — paste several job descriptions at once and see, ranked, which role your resume fits best
 - 🧱 **ATS-friendly resume builder** — no resume yet? Build one with a guided form, pick from multiple templates (Minimal, Modern, Compact), and export a clean, single-column PDF that parses reliably
+- 🧩 **Generate from a job description** — paste a JD and the skills you already know, get a tailored summary, prioritized skills, and honest strength bullets to start from, without inventing experience you don't have
 - ✉️ **Cover letter generator** — generate a tailored cover letter from your resume and a job description, then download it as a PDF
 - 🎙️ **Mock interview practice** — answer behavioral and technical questions tailored to your resume and the role, get scored feedback per answer, and keep going for as many rounds as you want
 - 📈 **Interview score charts** — visualize how you're doing across a session
@@ -72,9 +73,10 @@ jd-ready/
 │   ├── app/
 │   │   ├── (app)/            # Authenticated routes: dashboard, builder, compare,
 │   │   │                     # cover-letter, interview-prep, history, account
-│   │   ├── api/               # Route handlers: auth, analyze, compare, builder,
-│   │   │                     # cover-letters, interview, history, resumes, account,
-│   │   │                     # signup, forgot-password, reset-password
+│   │   ├── api/               # Route handlers: auth, analyze, compare, builder
+│   │   │                     # (including builder/generate), cover-letters, interview,
+│   │   │                     # history, resumes, account, signup, forgot-password,
+│   │   │                     # reset-password
 │   │   ├── login/, signup/, forgot-password/, reset-password/
 │   │   ├── layout.js, page.js, providers.js
 │   ├── components/
@@ -85,7 +87,8 @@ jd-ready/
 │   ├── data/                  # Static landing page copy (features, steps, FAQs)
 │   ├── hooks/                 # useUndoableDelete
 │   ├── lib/                   # groq.js, mongodb.js, cloudinary.js, email.js,
-│   │                          # analyzeResume.js, interviewPrep.js, resumeParser.js,
+│   │                          # analyzeResume.js, generateResumeFromJD.js,
+│   │                          # interviewPrep.js, resumeParser.js,
 │   │                          # ResumePDFDocument.js, CoverLetterPDFDocument.js
 │   ├── models/                # User, Resume, ResumeDraft, Analysis, CoverLetter,
 │   │                          # InterviewSession (Mongoose schemas)
