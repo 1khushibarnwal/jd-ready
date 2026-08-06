@@ -51,6 +51,7 @@ export async function PUT(request) {
       education,
       skills,
       projects,
+      highlights,
     } = body;
 
     await connectDB();
@@ -70,6 +71,7 @@ export async function PUT(request) {
         education,
         skills,
         projects,
+        highlights,
       },
       { new: true, upsert: true },
     ).lean();

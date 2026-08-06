@@ -22,7 +22,7 @@ export default function Footer({ session }) {
         </div>
 
         <div>
-          <h3 className="mb-4 font-semibold">Product</h3>
+          <h3 className="mb-4 font-bold">Product</h3>
 
           <ul className="space-y-3 text-sm">
             <li>
@@ -44,7 +44,7 @@ export default function Footer({ session }) {
         </div>
 
         <div>
-          <h3 className="mb-4 font-semibold">Account</h3>
+          <h3 className="mb-4 font-bold">Account</h3>
 
           <ul className="space-y-3 text-sm">
             {session ? (
@@ -72,11 +72,15 @@ export default function Footer({ session }) {
         </div>
 
         <div>
-          <h3 className="mb-4 font-semibold">Tools</h3>
+          <h3 className="mb-4 font-bold">Tools</h3>
 
           <ul className="space-y-3 text-sm">
             <li>
               <Link href="/dashboard">Resume Analysis</Link>
+            </li>
+
+            <li>
+              <Link href="/compare">Compare against JDs</Link>
             </li>
 
             <li>

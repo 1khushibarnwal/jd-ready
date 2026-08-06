@@ -34,6 +34,7 @@ export default function ResumeBuilder({ initialDraft }) {
     education: initialDraft.education?.length ? initialDraft.education : [],
     projects: initialDraft.projects?.length ? initialDraft.projects : [],
     skills: initialDraft.skills || [],
+    highlights: initialDraft.highlights || [],
   });
   const [skillsInput, setSkillsInput] = useState(
     (initialDraft.skills || []).join(", "),
@@ -42,6 +43,12 @@ export default function ResumeBuilder({ initialDraft }) {
   const [downloading, setDownloading] = useState(false);
   const debounceRef = useRef(null);
   const isFirstRender = useRef(true);
+
+  // --- Generate from a job description ---
+  const [genJobDescription, setGenJobDescription] = useState("");
+  const [genSkillsInput, setGenSkillsInput] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [generateError, setGenerateError] = useState("");
 
   // Debounced autosave — fires ~1.2s after the last change, so we're not
   // hammering the API on every keystroke.
@@ -82,6 +89,69 @@ export default function ResumeBuilder({ initialDraft }) {
       .map((s) => s.trim())
       .filter(Boolean);
     setDraft((d) => ({ ...d, skills: parsed }));
+  }
+
+  async function handleGenerate() {
+    setGenerateError("");
+
+    if (genJobDescription.trim().length < 30) {
+      setGenerateError("Paste a fuller job description (30+ characters).");
+      return;
+    }
+    const skillsList = genSkillsInput
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (skillsList.length === 0) {
+      setGenerateError("List at least one skill you know.");
+      return;
+    }
+
+    setGenerating(true);
+    try {
+      const res = await fetch("/api/builder/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jobDescription: genJobDescription,
+          skills: skillsList,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to generate resume content");
+      }
+
+      setDraft((d) => ({
+        ...d,
+        summary: data.draft.summary || d.summary,
+        skills: data.draft.skills?.length ? data.draft.skills : d.skills,
+        highlights: data.draft.highlights || [],
+      }));
+      setSkillsInput((data.draft.skills || []).join(", "));
+    } catch (err) {
+      setGenerateError(err.message || "Something went wrong. Try again.");
+    } finally {
+      setGenerating(false);
+    }
+  }
+
+  // --- Highlights (Key Strengths) ---
+  function addHighlight() {
+    setDraft((d) => ({ ...d, highlights: [...d.highlights, ""] }));
+  }
+  function updateHighlight(index, value) {
+    setDraft((d) => {
+      const next = [...d.highlights];
+      next[index] = value;
+      return { ...d, highlights: next };
+    });
+  }
+  function removeHighlight(index) {
+    setDraft((d) => ({
+      ...d,
+      highlights: d.highlights.filter((_, i) => i !== index),
+    }));
   }
 
   // --- Experience ---
@@ -213,6 +283,59 @@ export default function ResumeBuilder({ initialDraft }) {
         </button>
       </div>
 
+      {/* Generate from a job description */}
+      <div className="rounded-lg border border-border bg-background p-4 space-y-3">
+        <div>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-secondary">
+            Generate from a job description
+          </h2>
+          <p className="text-xs text-ink-secondary mt-1">
+            Paste a job description and the skills you already know. We&apos;ll
+            write a tailored summary, prioritize your skills for this role, and
+            draft a few strength bullets — using only the skills you list, never
+            invented experience.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-ink-secondary mb-1">
+            Job description
+          </label>
+          <textarea
+            rows={5}
+            value={genJobDescription}
+            onChange={(e) => setGenJobDescription(e.target.value)}
+            placeholder="Paste the job description here..."
+            className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-ink-secondary mb-1">
+            Skills you know (comma-separated)
+          </label>
+          <input
+            value={genSkillsInput}
+            onChange={(e) => setGenSkillsInput(e.target.value)}
+            placeholder="React, Node.js, MongoDB, ..."
+            className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
+          />
+        </div>
+
+        {generateError && (
+          <p className="text-xs text-danger">{generateError}</p>
+        )}
+
+        <button
+          type="button"
+          onClick={handleGenerate}
+          disabled={generating}
+          className="rounded-md bg-ink text-surface text-sm font-medium px-5 py-2.5 hover:opacity-90 disabled:opacity-50"
+        >
+          {generating ? "Generating..." : "Generate resume content"}
+        </button>
+      </div>
+
       {/* Template picker */}
       <Section title="Template">
         <div className="grid grid-cols-3 gap-3">
@@ -301,6 +424,38 @@ export default function ResumeBuilder({ initialDraft }) {
           placeholder="2-3 sentences summarizing your experience and strengths..."
           className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
         />
+      </Section>
+
+      {/* Key Strengths */}
+      <Section
+        title="Key strengths (optional)"
+        onAdd={addHighlight}
+        addLabel="Add strength"
+      >
+        <div className="space-y-2">
+          {draft.highlights.map((highlight, i) => (
+            <div key={i} className="flex gap-2">
+              <input
+                value={highlight}
+                onChange={(e) => updateHighlight(i, e.target.value)}
+                placeholder="Builds REST APIs with Node.js and Express..."
+                className="flex-1 rounded-md border border-border px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
+              />
+              <button
+                onClick={() => removeHighlight(i)}
+                className="text-xs text-ink-secondary hover:text-danger px-1"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          {draft.highlights.length === 0 && (
+            <p className="text-sm text-ink-secondary">
+              No strengths added yet — use &quot;Generate from a job
+              description&quot; above, or add your own.
+            </p>
+          )}
+        </div>
       </Section>
 
       {/* Experience */}

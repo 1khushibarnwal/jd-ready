@@ -125,6 +125,18 @@ export default function ResumePDFDocument({ draft }) {
           </View>
         )}
 
+        {draft.highlights?.filter(Boolean).length > 0 && (
+          <View>
+            <Text style={styles.sectionTitle}>Key Strengths</Text>
+            {draft.highlights.filter(Boolean).map((highlight, i) => (
+              <View key={i} style={styles.bullet}>
+                <Text style={styles.bulletDot}>•</Text>
+                <Text style={styles.bulletText}>{highlight}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
         {draft.experience?.length > 0 && (
           <View>
             <Text style={styles.sectionTitle}>Experience</Text>
