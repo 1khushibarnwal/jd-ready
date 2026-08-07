@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { FileCheck2 } from "lucide-react";
+
+import { CircleHelp, FileCheck2 } from "lucide-react";
+
 import LandingUserMenu from "@/components/LandingUserMenu";
 
 export default function Header({ session }) {
@@ -17,6 +19,16 @@ export default function Header({ session }) {
         </Link>
 
         <div className="flex items-center gap-3">
+          {/* How it works */}
+          <Link
+            href="/guide"
+            className="rounded-md p-2 text-ink-secondary transition-colors hover:bg-surface hover:text-ink"
+            aria-label="How JDReady works"
+            title="How JDReady works"
+          >
+            <CircleHelp size={18} />
+          </Link>
+
           {session ? (
             <LandingUserMenu
               user={{

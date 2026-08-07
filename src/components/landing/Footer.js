@@ -79,6 +79,10 @@ export default function Footer({ session }) {
             </li>
 
             <li>
+              <Link href="/compare">Compare against multiple JDs</Link>
+            </li>
+
+            <li>
               <Link href="/builder">Resume Builder</Link>
             </li>
 
