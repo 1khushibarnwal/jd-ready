@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CircleHelp, FileCheck2 } from "lucide-react";
 
 import LandingUserMenu from "@/components/LandingUserMenu";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Header({ session }) {
   return (
@@ -28,6 +29,8 @@ export default function Header({ session }) {
           >
             <CircleHelp size={18} />
           </Link>
+
+          <ThemeToggle />
 
           {session ? (
             <LandingUserMenu
