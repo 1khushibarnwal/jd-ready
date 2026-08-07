@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import DeleteAccountButton from "@/components/DeleteAccountButton";
+import EditProfileForm from "@/components/EditProfileForm";
 
 export default async function AccountPage() {
   const session = await auth();
@@ -18,16 +19,10 @@ export default async function AccountPage() {
         <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-secondary mb-4">
           Profile
         </h2>
-        <div className="space-y-3 text-sm">
-          <div>
-            <p className="text-ink-secondary">Name</p>
-            <p className="text-ink font-medium">{session.user.name}</p>
-          </div>
-          <div>
-            <p className="text-ink-secondary">Email</p>
-            <p className="text-ink font-medium">{session.user.email}</p>
-          </div>
-        </div>
+        <EditProfileForm
+          initialName={session.user.name}
+          initialEmail={session.user.email}
+        />
       </div>
 
       <div className="border border-danger/30 rounded-lg p-6">

@@ -37,9 +37,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
+      }
+      // Fired when the client calls useSession().update({...}) — e.g. right
+      // after a profile edit — so the JWT (and therefore session.user)
+      // reflects the change immediately, with no re-login required.
+      if (trigger === "update" && session) {
+        if (session.name) token.name = session.name;
+        if (session.email) token.email = session.email;
       }
       return token;
     },
