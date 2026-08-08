@@ -165,7 +165,7 @@ export default function Navbar({ user }) {
 
       {/* Mobile menu panel */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-border bg-surface px-4 py-3 space-y-1">
+        <div className="lg:hidden border-t border-border bg-surface px-4 py-3 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =

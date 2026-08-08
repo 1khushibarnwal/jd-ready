@@ -15,7 +15,7 @@ export default function FAQ() {
           {faqs.map((faq, index) => (
             <FadeIn key={faq.q} delay={index * 0.08}>
               <details className="group rounded-xl border border-border bg-surface p-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between font-medium">
+                <summary className="flex cursor-pointer list-none items-center justify-between font-medium gap-4 text-sm sm:text-base">
                   {faq.q}
 
                   <span className="transition-transform group-open:rotate-45">

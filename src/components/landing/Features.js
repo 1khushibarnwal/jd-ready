@@ -7,7 +7,7 @@ export default function Features() {
     <section className="border-t border-border py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <FadeIn>
-          <h2 className="font-display text-3xl font-bold text-ink">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
             Everything you need to land more interviews
           </h2>
 

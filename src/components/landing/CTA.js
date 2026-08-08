@@ -8,11 +8,11 @@ export default function CTA({ session }) {
     <section className="border-t border-border py-20">
       <FadeIn>
         <div className="mx-auto max-w-3xl px-4 text-center">
-          <h2 className="font-display text-4xl font-bold text-ink">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-ink">
             Ready to land more interviews?
           </h2>
 
-          <p className="mt-4 text-lg text-ink-secondary">
+          <p className="mt-4 text-ink-secondary text-base sm:text-lg">
             Upload your resume and let AI tell you exactly what recruiters are
             looking for.
           </p>

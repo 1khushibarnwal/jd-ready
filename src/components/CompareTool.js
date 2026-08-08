@@ -120,7 +120,7 @@ export default function CompareTool({ resumes }) {
               key={i}
               className="border border-border rounded-lg p-4 space-y-2"
             >
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <input
                   value={jd.label}
                   onChange={(e) => updateJD(i, "label", e.target.value)}
@@ -148,7 +148,7 @@ export default function CompareTool({ resumes }) {
           ))}
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           {jds.length < 5 ? (
             <button
               type="button"
@@ -187,7 +187,7 @@ export default function CompareTool({ resumes }) {
             {results.map((r, i) => (
               <li
                 key={r._id || i}
-                className="flex items-center justify-between gap-4 border border-border rounded-lg px-4 py-3"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between items-center justify-between gap-4 border border-border rounded-lg px-4 py-3"
               >
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-ink truncate">

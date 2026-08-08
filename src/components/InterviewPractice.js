@@ -33,6 +33,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
     setItems: setPastSessions,
     deleteUrl: (id) => `/api/interview/${id}`,
   });
+
   const [stage, setStage] = useState("setup"); // setup | session | round-prompt | summary
   const [activeSession, setActiveSession] = useState(null); // { _id, questions, answers }
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -51,18 +52,21 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       setError("Please select a resume first");
       return;
     }
+
     if (jobDescription.trim().length < 30) {
       setError("Paste a fuller job description (at least 30 characters)");
       return;
     }
 
     setStarting(true);
+
     try {
       const res = await fetch("/api/interview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ resumeId, jobDescription }),
       });
+
       const data = await res.json();
 
       if (!res.ok) {
@@ -91,6 +95,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       setError("Write a bit more before submitting (at least 10 characters)");
       return;
     }
+
     setError("");
     setSubmitting(true);
 
@@ -98,8 +103,12 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       const res = await fetch(`/api/interview/${activeSession._id}/answer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ questionIndex: currentIndex, answerText }),
+        body: JSON.stringify({
+          questionIndex: currentIndex,
+          answerText,
+        }),
       });
+
       const data = await res.json();
 
       if (!res.ok) {
@@ -110,19 +119,19 @@ export default function InterviewPractice({ resumes, initialSessions }) {
 
       setCurrentFeedback(data.feedback);
 
-      // This was the bug: without this, activeSession.answers stays the empty
-      // array from session creation, so the summary screen thinks nothing was
-      // ever answered even though every submission succeeded.
       setActiveSession((prev) => {
         const nextAnswers = [...(prev.answers || [])];
+
         const existingIndex = nextAnswers.findIndex(
           (a) => a.questionIndex === currentIndex,
         );
+
         if (existingIndex !== -1) {
           nextAnswers[existingIndex] = data.feedback;
         } else {
           nextAnswers.push(data.feedback);
         }
+
         return { ...prev, answers: nextAnswers };
       });
     } catch (err) {
@@ -136,10 +145,12 @@ export default function InterviewPractice({ resumes, initialSessions }) {
   function handleNext() {
     const isLastOfKnownBatch =
       currentIndex === activeSession.questions.length - 1;
+
     if (isLastOfKnownBatch) {
       setStage("round-prompt");
       return;
     }
+
     setCurrentIndex((i) => i + 1);
     setAnswerText("");
     setCurrentFeedback(null);
@@ -153,6 +164,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       const res = await fetch(`/api/interview/${activeSession._id}/continue`, {
         method: "POST",
       });
+
       const data = await res.json();
 
       if (!res.ok) {
@@ -162,10 +174,12 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       }
 
       const startIndex = data.startIndex;
+
       setActiveSession((prev) => ({
         ...prev,
         questions: [...prev.questions, ...data.newQuestions],
       }));
+
       setRound((r) => r + 1);
       setCurrentIndex(startIndex);
       setAnswerText("");
@@ -196,13 +210,16 @@ export default function InterviewPractice({ resumes, initialSessions }) {
 
   async function viewPastSession(id) {
     setError("");
+
     try {
       const res = await fetch(`/api/interview/${id}`);
       const data = await res.json();
+
       if (!res.ok) {
         setError(data.error || "Couldn't load that session");
         return;
       }
+
       setActiveSession(data.session);
       setStage("summary");
     } catch (err) {
@@ -234,6 +251,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
           <span>
             Question {currentIndex + 1} of {total} · Round {round}
           </span>
+
           <span className="uppercase text-xs font-semibold tracking-wide">
             {question.type}
           </span>
@@ -262,16 +280,20 @@ export default function InterviewPractice({ resumes, initialSessions }) {
               {submitting && (
                 <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin" />
               )}
+
               {submitting ? "Evaluating your answer..." : "Submit answer"}
             </button>
           ) : (
             <div className="mt-5 pt-5 border-t border-border space-y-4">
               <div className="flex items-center gap-3">
                 <span
-                  className={`font-mono text-2xl font-semibold ${scoreColor(currentFeedback.score)}`}
+                  className={`font-mono text-2xl font-semibold ${scoreColor(
+                    currentFeedback.score,
+                  )}`}
                 >
                   {currentFeedback.score}
                 </span>
+
                 <span className="text-sm text-ink-secondary">/ 100</span>
               </div>
 
@@ -280,6 +302,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
                   <p className="text-sm font-semibold text-success mb-1.5">
                     What worked
                   </p>
+
                   <ul className="space-y-1">
                     {currentFeedback.strengths.map((s, i) => (
                       <li key={i} className="text-sm text-ink">
@@ -295,6 +318,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
                   <p className="text-sm font-semibold text-warning mb-1.5">
                     Could improve
                   </p>
+
                   <ul className="space-y-1">
                     {currentFeedback.improvements.map((s, i) => (
                       <li key={i} className="text-sm text-ink">
@@ -310,6 +334,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
                   <p className="text-sm font-semibold text-ink mb-1.5">
                     Example strong answer
                   </p>
+
                   <p className="text-sm text-ink-secondary leading-relaxed">
                     <FormattedText text={currentFeedback.modelAnswer} />
                   </p>
@@ -338,15 +363,12 @@ export default function InterviewPractice({ resumes, initialSessions }) {
         <p className="font-display text-xl font-semibold text-ink">
           Nice work finishing round {round}. Want to go for round {round + 1}?
         </p>
+
         <p className="text-sm text-ink-secondary max-w-md mx-auto">
           You&apos;ll get 6 more questions on the same resume and job
           description — different questions than what you&apos;ve already
           answered.
         </p>
-
-        {continueError && (
-          <p className="text-sm text-danger">{continueError}</p>
-        )}
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <button
@@ -357,10 +379,12 @@ export default function InterviewPractice({ resumes, initialSessions }) {
             {continuing && (
               <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin" />
             )}
+
             {continuing
               ? "Preparing round " + (round + 1) + "..."
               : "Yes, round " + (round + 1)}
           </button>
+
           <button
             onClick={handleDeclineRound}
             disabled={continuing}
@@ -376,6 +400,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
   // --- Summary stage ---
   if (stage === "summary" && activeSession) {
     const answeredCount = activeSession.answers?.length || 0;
+
     const avgScore = answeredCount
       ? Math.round(
           activeSession.answers.reduce((sum, a) => sum + (a.score || 0), 0) /
@@ -383,8 +408,6 @@ export default function InterviewPractice({ resumes, initialSessions }) {
         )
       : null;
 
-    // Pull together every improvement note across all answered questions,
-    // deduplicated, as a concrete "what to work on" list next to the score chart.
     const focusAreas = Array.from(
       new Set(
         (activeSession.answers || []).flatMap((a) => a.improvements || []),
@@ -394,10 +417,11 @@ export default function InterviewPractice({ resumes, initialSessions }) {
     return (
       <div className="space-y-6">
         <div className="border border-border rounded-lg p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-secondary">
               Session summary
             </h3>
+
             <button
               onClick={handleReset}
               className="text-sm font-medium text-ink underline"
@@ -418,6 +442,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
                   <p className="text-sm font-semibold text-ink mb-2">
                     Focus areas
                   </p>
+
                   <ul className="space-y-1.5">
                     {focusAreas.map((area, i) => (
                       <li key={i} className="text-sm text-ink-secondary">
@@ -440,18 +465,25 @@ export default function InterviewPractice({ resumes, initialSessions }) {
             const answer = activeSession.answers?.find(
               (a) => a.questionIndex === i,
             );
+
             return (
               <div key={i} className="border border-border rounded-lg p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-medium text-ink">{q.text}</p>
+                {/* Mobile fix: question and score stack instead of fighting
+                    for horizontal space. */}
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-2">
+                  <p className="font-medium text-ink min-w-0">{q.text}</p>
+
                   {answer && (
                     <span
-                      className={`font-mono text-sm font-semibold shrink-0 ml-4 ${scoreColor(answer.score)}`}
+                      className={`font-mono text-sm font-semibold shrink-0 sm:ml-4 ${scoreColor(
+                        answer.score,
+                      )}`}
                     >
                       {answer.score}
                     </span>
                   )}
                 </div>
+
                 {answer ? (
                   <p className="text-sm text-ink-secondary whitespace-pre-wrap">
                     {answer.answerText}
@@ -480,6 +512,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
           >
             Choose a resume
           </label>
+
           <select
             id="resume-select"
             value={resumeId}
@@ -498,6 +531,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
           <label className="block text-sm font-medium mb-1" htmlFor="jd">
             Job description
           </label>
+
           <textarea
             id="jd"
             rows={8}
@@ -518,6 +552,7 @@ export default function InterviewPractice({ resumes, initialSessions }) {
           {starting && (
             <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin" />
           )}
+
           {starting ? "Preparing your questions..." : "Start mock interview"}
         </button>
       </form>
@@ -527,36 +562,41 @@ export default function InterviewPractice({ resumes, initialSessions }) {
           <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-secondary mb-3">
             Past sessions
           </h3>
+
           <ul className="space-y-2">
             {pastSessions.map((s) => (
               <li
                 key={s._id}
-                className="flex items-center gap-3 border border-border rounded-lg px-4 py-3"
+                className="flex flex-col gap-3 border border-border rounded-lg px-4 py-3 sm:flex-row sm:items-center"
               >
-                <div className="flex-1 min-w-0 flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0 w-full sm:flex sm:items-center sm:justify-between sm:gap-4">
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-ink truncate">
                       {s.resume?.filename || "Deleted resume"}
                     </p>
+
                     <p className="text-xs text-ink-secondary">
                       {new Date(s.createdAt).toLocaleString()} ·{" "}
                       {s.questions?.length || 0} questions
                     </p>
                   </div>
+
                   <button
                     onClick={() => viewPastSession(s._id)}
-                    className="text-xs font-medium text-ink-secondary hover:text-ink underline shrink-0"
+                    className="mt-2 sm:mt-0 text-xs font-medium text-ink-secondary hover:text-ink underline shrink-0"
                   >
                     View
                   </button>
                 </div>
 
-                <DeleteRowAction
-                  isConfirming={confirmingSessionId === s._id}
-                  onAskConfirm={() => askConfirmSessionDelete(s._id)}
-                  onConfirm={() => confirmSessionDelete(s)}
-                  onCancel={cancelConfirmSessionDelete}
-                />
+                <div className="self-end sm:self-auto shrink-0">
+                  <DeleteRowAction
+                    isConfirming={confirmingSessionId === s._id}
+                    onAskConfirm={() => askConfirmSessionDelete(s._id)}
+                    onConfirm={() => confirmSessionDelete(s)}
+                    onCancel={cancelConfirmSessionDelete}
+                  />
+                </div>
               </li>
             ))}
           </ul>

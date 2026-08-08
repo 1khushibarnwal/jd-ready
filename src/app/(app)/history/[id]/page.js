@@ -28,7 +28,7 @@ export default async function HistoryDetailPage({ params }) {
 
   return (
     <div className="max-w-2xl mx-auto w-full px-4 py-12">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="font-display text-xl font-semibold text-ink">
             {analysis.label || analysis.resume?.filename || "Deleted resume"}

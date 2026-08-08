@@ -264,7 +264,7 @@ export default function ResumeBuilder({ initialDraft }) {
 
   return (
     <div className="space-y-10 pb-16">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-ink-secondary">
           {saveState === "saving" && "Saving..."}
           {saveState === "saved" && "All changes saved"}
@@ -494,7 +494,7 @@ export default function ResumeBuilder({ initialDraft }) {
                   value={exp.location}
                   onChange={(v) => updateExperience(i, "location", v)}
                 />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <Field
                     label="Start"
                     value={exp.startDate}
@@ -575,7 +575,7 @@ export default function ResumeBuilder({ initialDraft }) {
                   value={edu.degree}
                   onChange={(v) => updateEducation(i, "degree", v)}
                 />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <Field
                     label="Start"
                     value={edu.startDate}

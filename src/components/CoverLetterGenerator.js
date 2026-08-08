@@ -150,11 +150,11 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
 
       {letter && (
         <div className="border border-border rounded-lg p-6 space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h3 className="text-sm font-semibold text-ink-secondary uppercase tracking-wide">
               Generated letter
             </h3>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 onClick={() => handleCopy(letter.content)}
                 className="text-xs font-medium text-ink-secondary hover:text-ink underline"
@@ -187,7 +187,7 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
             {letters.map((l) => (
               <li
                 key={l._id}
-                className="flex items-center justify-between gap-4 border border-border rounded-lg px-4 py-3"
+                className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border border-border rounded-lg px-4 py-3"
               >
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-ink truncate">
@@ -197,7 +197,7 @@ export default function CoverLetterGenerator({ resumes, initialLetters }) {
                     {new Date(l.createdAt).toLocaleString()}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex flex-wrap items-center gap-3 shrink-0">
                   <button
                     onClick={() => setLetter(l)}
                     className="text-xs font-medium text-ink-secondary hover:text-ink underline"

@@ -14,14 +14,15 @@ export default function Hero({ session }) {
 
       <div className="absolute -right-32 bottom-0 h-80 w-80 rounded-full bg-success/10 blur-3xl" />
 
-      <div className="mx-auto grid max-w-6xl gap-16 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center">
+      <div className="mx-auto grid max-w-6xl px-4 sm:px-6 gap-10 py-14 sm:gap-16 sm:py-20 md:grid-cols-2 md:items-center">
         <FadeIn>
           <div>
             <p className="mb-4 inline-flex rounded-full border border-border bg-surface px-4 py-2 text-sm text-ink-secondary">
               ✨ AI Resume Intelligence
             </p>
 
-            <h1 className="font-display text-5xl font-bold leading-tight tracking-tight text-ink">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight text-ink">
+              {" "}
               Know exactly why your resume is not landing interviews.
             </h1>
 

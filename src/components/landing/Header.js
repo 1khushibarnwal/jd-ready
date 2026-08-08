@@ -19,7 +19,7 @@ export default function Header({ session }) {
           </span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {/* How it works */}
           <Link
             href="/guide"
@@ -43,14 +43,14 @@ export default function Header({ session }) {
             <>
               <Link
                 href="/login"
-                className="text-sm text-ink-secondary transition-colors hover:text-ink"
+                className="hidden sm:inline text-sm text-ink-secondary transition-colors hover:text-ink"
               >
                 Log in
               </Link>
 
               <Link
                 href="/signup"
-                className="rounded-lg bg-ink px-5 py-2 text-sm font-medium text-surface transition hover:opacity-90"
+                className="rounded-lg bg-ink px-3 sm:px-5 py-2 text-sm font-medium text-surface transition hover:opacity-90"
               >
                 Get Started
               </Link>

@@ -150,7 +150,7 @@ Visit `http://localhost:3000`.
 
 ## Deployment
 
-JDReady is a single Next.js app, so it deploys as one service (e.g. Vercel): _deployment is under progress_
+JDReady is a single Next.js app, so it is deployed as one service on Vercel: [https://jd-ready.vercel.app/](https://jd-ready.vercel.app/)
 
 - Set the same environment variables from `.env.local` in your host's dashboard, with `NEXTAUTH_URL` set to your deployed domain.
 - Use a MongoDB Atlas cluster with network access opened to your host's IP range (or `0.0.0.0/0` if your host doesn't use fixed IPs).

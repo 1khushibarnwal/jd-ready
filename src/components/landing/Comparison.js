@@ -14,8 +14,8 @@ export default function Comparison() {
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <div className="mt-10 overflow-hidden rounded-xl border border-border">
-            <div className="grid grid-cols-[2fr_1fr_1fr] bg-background font-semibold">
+          <div className="mt-10 overflow-x-auto rounded-xl border border-border">
+            <div className="grid grid-cols-[2fr_1fr_1fr] bg-background font-semibold min-w-130">
               <div className="p-4">Feature</div>
 
               <div className="p-4 text-center">JDReady</div>
