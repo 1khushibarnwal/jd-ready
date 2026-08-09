@@ -3,6 +3,7 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import PasswordInput from "@/components/PasswordInput";
 
 export default function ResetPasswordPage() {
   return (
@@ -91,14 +92,13 @@ function ResetPasswordForm() {
             >
               New password
             </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               required
               minLength={6}
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
             />
           </div>
 
@@ -109,14 +109,13 @@ function ResetPasswordForm() {
             >
               Confirm new password
             </label>
-            <input
+            <PasswordInput
               id="confirmPassword"
-              type="password"
               required
               minLength={6}
+              autoComplete="new-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink"
             />
           </div>
 
