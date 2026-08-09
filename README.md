@@ -16,7 +16,8 @@ Upload your resume and a job description, and get an instant match score, the sk
 - 📈 **Interview score charts** — visualize how you're doing across a session
 - 🕘 **Full history** — every analysis, cover letter, and interview session is saved and revisitable, with undo-able deletes
 - 👤 **Account settings** — edit profile, and permanently delete your account and all associated data on request
-- 🌗 **Light/dark theme** — persists across sessions
+- 🌗 **Light/dark theme** — persists across sessions, with a toggle on both the landing page and the authenticated app
+- 🛟 **Resilient by design** — friendly loading states during navigation and data fetches, an offline/reconnect banner, and polite custom error and 404 pages instead of framework defaults
 
 ---
 
@@ -30,7 +31,7 @@ Upload your resume and a job description, and get an instant match score, the sk
 
 **Database:** MongoDB + Mongoose
 
-**AI:** Groq SDK (resume/JD analysis, cover letters, interview questions & feedback)
+**AI:** Groq SDK (resume/JD analysis, resume content generation, cover letters, interview questions & feedback)
 
 **Files:** `pdf-parse` + `mammoth` (parsing uploaded .pdf/.docx resumes), `@react-pdf/renderer` (generating resume & cover letter PDFs), Cloudinary (file hosting)
 
@@ -44,26 +45,24 @@ Upload your resume and a job description, and get an instant match score, the sk
 
 ## Libraries Used
 
-| Library               | Purpose                                                                                     |
-| --------------------- | ------------------------------------------------------------------------------------------- |
-| `next`                | App framework (routing, App Router, API routes, middleware)                                 |
-| `react` / `react-dom` | UI library and rendering                                                                    |
-| `next-auth`           | Authentication (Credentials provider, session/JWT)                                          |
-| `bcryptjs`            | Password hashing and verification                                                           |
-| `mongoose`            | MongoDB object modeling and database access                                                 |
-| `zod`                 | Request and schema validation                                                               |
-| `groq-sdk`            | AI-powered resume analysis, cover letter generation, interview practice, and job comparison |
-| `pdf-parse`           | Extracting text from uploaded PDF resumes                                                   |
-| `mammoth`             | Extracting text from uploaded `.docx` resumes                                               |
-| `@react-pdf/renderer` | Generating downloadable resume and cover letter PDFs                                        |
-| `cloudinary`          | Cloud storage for uploaded resumes and generated files                                      |
-| `resend`              | Transactional emails (password reset and account emails)                                    |
-| `recharts`            | Charts and data visualization for analytics                                                 |
-| `lucide-react`        | Modern icon library used throughout the UI                                                  |
-| `react-icons`         | Additional icon packs for UI components                                                     |
-| `motion`              | Animations and page transitions                                                             |
-| `next-themes`         | Light/dark theme support with persistence                                                   |
-| `tailwindcss`         | Utility-first CSS framework                                                                 |
+| Library               | Purpose                                                              |
+| --------------------- | -------------------------------------------------------------------- |
+| `next`                | App framework (routing, API routes, middleware)                      |
+| `react` / `react-dom` | UI library                                                           |
+| `next-auth`           | Authentication (Credentials provider, session/JWT)                   |
+| `bcryptjs`            | Password hashing                                                     |
+| `mongoose`            | MongoDB object modeling                                              |
+| `zod`                 | Request/schema validation                                            |
+| `groq-sdk`            | AI analysis, resume content generation, cover letters, interview Q&A |
+| `pdf-parse`           | Extracting text from uploaded PDF resumes                            |
+| `mammoth`             | Extracting text from uploaded .docx resumes                          |
+| `@react-pdf/renderer` | Generating downloadable resume/cover letter PDFs                     |
+| `cloudinary`          | Hosting uploaded/generated files                                     |
+| `resend`              | Transactional email (password reset)                                 |
+| `recharts`            | Interview score charts                                               |
+| `lucide-react`        | Icon set used throughout the UI                                      |
+| `next-themes`         | Light/dark theme toggle with persistence                             |
+| `tailwindcss`         | Utility-first CSS framework                                          |
 
 ---
 
@@ -73,32 +72,111 @@ Upload your resume and a job description, and get an instant match score, the sk
 jd-ready/
 ├── src/
 │   ├── app/
-│   │   ├── (app)/            # Authenticated routes: dashboard, builder, compare,
-│   │   │                     # cover-letter, interview-prep, history, account
-│   │   ├── api/               # Route handlers: auth, analyze, compare, builder
-│   │   │                     # (including builder/generate), cover-letters, interview,
-│   │   │                     # history, resumes, account, signup, forgot-password,
-│   │   │                     # reset-password
-│   │   ├── login/, signup/, forgot-password/, reset-password/
-│   │   ├── layout.js, page.js, providers.js
+│   │   ├── (app)/                  # Authenticated routes
+│   │   │   ├── dashboard/
+│   │   │   ├── builder/
+│   │   │   ├── compare/
+│   │   │   ├── cover-letter/
+│   │   │   ├── interview-prep/
+│   │   │   ├── history/
+│   │   │   ├── account/
+│   │   │   ├── loading.js
+│   │   │   └── error.js
+│   │   │
+│   │   ├── api/                    # API route handlers
+│   │   │   ├── auth/
+│   │   │   ├── analyze/
+│   │   │   ├── compare/
+│   │   │   ├── builder/
+│   │   │   │   └── generate/
+│   │   │   ├── cover-letters/
+│   │   │   ├── interview/
+│   │   │   ├── history/
+│   │   │   ├── resumes/
+│   │   │   ├── account/
+│   │   │   ├── signup/
+│   │   │   ├── forgot-password/
+│   │   │   └── reset-password/
+│   │   │
+│   │   ├── about/
+│   │   ├── privacy/
+│   │   ├── login/
+│   │   ├── signup/
+│   │   ├── forgot-password/
+│   │   ├── reset-password/
+│   │   ├── layout.js
+│   │   ├── page.js
+│   │   ├── providers.js
+│   │   ├── loading.js
+│   │   ├── error.js
+│   │   ├── global-error.js
+│   │   └── not-found.js
+│   │
 │   ├── components/
-│   │   ├── landing/           # Hero, Features, HowItWorks, Comparison, FAQ, CTA
-│   │   ├── animations/        # Shared motion primitives
-│   │   └── *.js               # ResumeAnalyzer, ResumeBuilder, CompareTool,
-│   │                          # CoverLetterGenerator, InterviewPractice, HistoryList, ...
-│   ├── data/                  # Static landing page copy (features, steps, FAQs)
-│   ├── hooks/                 # useUndoableDelete
-│   ├── lib/                   # groq.js, mongodb.js, cloudinary.js, email.js,
-│   │                          # analyzeResume.js, generateResumeFromJD.js,
-│   │                          # interviewPrep.js, resumeParser.js,
-│   │                          # ResumePDFDocument.js, CoverLetterPDFDocument.js
-│   ├── models/                # User, Resume, ResumeDraft, Analysis, CoverLetter,
-│   │                          # InterviewSession (Mongoose schemas)
-│   ├── auth.js, auth.config.js, middleware.js
+│   │   ├── landing/                # Landing page components
+│   │   │   ├── Hero.js
+│   │   │   ├── Features.js
+│   │   │   ├── HowItWorks.js
+│   │   │   ├── Comparison.js
+│   │   │   ├── FAQ.js
+│   │   │   ├── CTA.js
+│   │   │   ├── Header.js
+│   │   │   └── Footer.js
+│   │   │
+│   │   ├── animations/             # Shared motion primitives
+│   │   │
+│   │   ├── ResumeAnalyzer.js
+│   │   ├── ResumeBuilder.js
+│   │   ├── CompareTool.js
+│   │   ├── CoverLetterGenerator.js
+│   │   ├── InterviewPractice.js
+│   │   ├── HistoryList.js
+│   │   ├── EditProfileForm.js
+│   │   ├── PasswordInput.js
+│   │   ├── ThemeToggle.js
+│   │   ├── NetworkStatusBanner.js
+│   │   ├── LoadingScreen.js
+│   │   ├── GoBackButton.js
+│   │   └── ...
+│   │
+│   ├── data/                       # Static landing page copy
+│   │   ├── features.js
+│   │   ├── steps.js
+│   │   └── faqs.js
+│   │
+│   ├── hooks/
+│   │   └── useUndoableDelete.js
+│   │
+│   ├── lib/
+│   │   ├── groq.js
+│   │   ├── mongodb.js
+│   │   ├── cloudinary.js
+│   │   ├── email.js
+│   │   ├── analyzeResume.js
+│   │   ├── generateResumeFromJD.js
+│   │   ├── interviewPrep.js
+│   │   ├── resumeParser.js
+│   │   ├── ResumePDFDocument.js
+│   │   └── CoverLetterPDFDocument.js
+│   │
+│   ├── models/                     # Mongoose schemas
+│   │   ├── User.js
+│   │   ├── Resume.js
+│   │   ├── ResumeDraft.js
+│   │   ├── Analysis.js
+│   │   ├── CoverLetter.js
+│   │   └── InterviewSession.js
+│   │
+│   ├── auth.js
+│   ├── auth.config.js
+│   └── middleware.js
+│
 ├── public/
 ├── package.json
 └── README.md
 ```
+
+---
 
 ---
 
@@ -180,8 +258,10 @@ Some improvements planned for future versions of JDReady include:
 - Passwords are hashed with bcrypt before storage; the raw password is never persisted.
 - Sessions are handled by NextAuth; protected routes (`/dashboard`, `/history`, `/builder`, `/cover-letter`, `/compare`, `/account`, `/interview-prep`) are gated in `middleware.js` and redirect unauthenticated users to `/login`.
 - All resumes, analyses, cover letters, and interview sessions are scoped to the authenticated user — no cross-account access.
+- Profile updates (name/email) are validated and checked for email uniqueness before saving; the session refreshes immediately so no re-login is needed.
 - Password reset always returns a generic success message regardless of whether the email exists, to avoid leaking registered emails, and reset tokens are stored hashed with an expiry.
 - Account deletion removes the user's associated data on request.
+- See the [Privacy Policy](/privacy) for what's collected, why, and which third parties process it.
 
 ---
 
