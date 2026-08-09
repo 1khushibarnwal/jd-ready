@@ -1,7 +1,5 @@
 import Link from "next/link";
-
-import { CircleHelp, FileCheck2 } from "lucide-react";
-
+import { FileCheck2 } from "lucide-react";
 import LandingUserMenu from "@/components/LandingUserMenu";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -19,17 +17,7 @@ export default function Header({ session }) {
           </span>
         </Link>
 
-        <div className="flex items-center gap-1.5 sm:gap-3">
-          {/* How it works */}
-          <Link
-            href="/guide"
-            className="rounded-md p-2 text-ink-secondary transition-colors hover:bg-surface hover:text-ink"
-            aria-label="How JDReady works"
-            title="How JDReady works"
-          >
-            <CircleHelp size={18} />
-          </Link>
-
+        <div className="flex items-center gap-3">
           <ThemeToggle />
 
           {session ? (
@@ -43,14 +31,14 @@ export default function Header({ session }) {
             <>
               <Link
                 href="/login"
-                className="hidden sm:inline text-sm text-ink-secondary transition-colors hover:text-ink"
+                className="text-sm text-ink-secondary transition-colors hover:text-ink"
               >
                 Log in
               </Link>
 
               <Link
                 href="/signup"
-                className="rounded-lg bg-ink px-3 sm:px-5 py-2 text-sm font-medium text-surface transition hover:opacity-90"
+                className="rounded-lg bg-ink px-5 py-2 text-sm font-medium text-surface transition hover:opacity-90"
               >
                 Get Started
               </Link>
