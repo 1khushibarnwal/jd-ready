@@ -12,9 +12,11 @@ export async function POST(request) {
   }
 
   try {
-    const { resumeId, jobDescription } = await request.json();
+    const { resumeId, jobDescription: rawJobDescription } =
+      await request.json();
+    const jobDescription = (rawJobDescription || "").trim();
 
-    if (!resumeId || !jobDescription || jobDescription.trim().length < 30) {
+    if (!resumeId || !jobDescription || jobDescription.length < 30) {
       return NextResponse.json(
         {
           error: "A resume and a job description (30+ characters) are required",
@@ -31,6 +33,22 @@ export async function POST(request) {
     });
     if (!resume) {
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
+    }
+
+    // Same resume + same JD text should always yield the same verdict, so
+    // reuse a prior analysis instead of hitting the LLM again. This also
+    // sidesteps any residual model-to-model variance for the user.
+    const cached = await Analysis.findOne({
+      user: session.user.id,
+      resume: resume._id,
+      jobDescription,
+    }).sort({ createdAt: -1 });
+
+    if (cached) {
+      return NextResponse.json(
+        { analysis: cached, cached: true },
+        { status: 200 },
+      );
     }
 
     let result;
@@ -57,7 +75,7 @@ export async function POST(request) {
       ...result,
     });
 
-    return NextResponse.json({ analysis }, { status: 201 });
+    return NextResponse.json({ analysis, cached: false }, { status: 201 });
   } catch (error) {
     console.error("Analysis error:", error);
     return NextResponse.json(
