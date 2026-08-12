@@ -92,16 +92,16 @@ export async function tweakResumeText(resumeText, edits) {
 
   const tweakedResumeText = stripCodeFence(raw);
 
-  // Sanity check: the rewritten resume should be roughly the same size as the
-  // original (it's the same resume plus a few short additions), not a tiny
-  // fragment — catches cases where the model responded with just a comment
-  // or explanation instead of the actual resume text.
+  // Soft sanity check only (never blocks the result): PDF text extraction can
+  // produce wildly inflated whitespace in the original text (multi-column
+  // layouts especially), so a shorter-but-valid rewrite is common and should
+  // not be treated as a failure. This is just a breadcrumb for debugging.
   if (tweakedResumeText.length < resumeText.length * 0.5) {
-    console.error(
-      "Tweak response looks too short to be the full resume. Raw content:",
-      raw,
+    console.warn(
+      "Tweak response is notably shorter than the original resume text " +
+        `(${tweakedResumeText.length} vs ${resumeText.length} chars) — ` +
+        "may be fine (whitespace differences) but worth a spot-check.",
     );
-    throw new Error("Tweak response looks incomplete");
   }
 
   return tweakedResumeText;

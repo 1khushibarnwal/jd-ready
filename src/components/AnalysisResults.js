@@ -16,11 +16,19 @@ export default function AnalysisResults({ analysis, resumeId }) {
   // The exact wording to send per suggestion, seeded from the original
   // suggestion text but fully editable — the user controls the final phrasing.
   const [editedText, setEditedText] = useState({}); // { [index]: string }
+  // Where the AI suggests placing each suggestion, once drafted.
+  const [placementHint, setPlacementHint] = useState({}); // { [index]: string }
+  // Per-suggestion "drafting wording..." loading state.
+  const [drafting, setDrafting] = useState({}); // { [index]: true }
+  const [draftError, setDraftError] = useState({}); // { [index]: string }
 
   const [tweaking, setTweaking] = useState(false);
   const [tweakError, setTweakError] = useState("");
   const [tweakedResumeText, setTweakedResumeText] = useState("");
   const [copied, setCopied] = useState(false);
+
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
 
   const suggestions = analysis.suggestions || [];
   const approvedCount = Object.values(approved).filter(Boolean).length;
@@ -36,6 +44,51 @@ export default function AnalysisResults({ analysis, resumeId }) {
 
   function updateEditedText(i, value) {
     setEditedText((prev) => ({ ...prev, [i]: value }));
+  }
+
+  // Asks the AI to draft concrete, grounded wording + where to place it for
+  // suggestion `i`. Auto-checks the suggestion (so the drafted text is
+  // visible in its textarea) but never applies anything on its own — the
+  // user still has to review/edit and hit Apply.
+  async function handleDraftWording(i) {
+    if (!resumeId) return;
+
+    setDraftError((prev) => ({ ...prev, [i]: "" }));
+    setDrafting((prev) => ({ ...prev, [i]: true }));
+
+    setApproved((prev) => (prev[i] ? prev : { ...prev, [i]: true }));
+
+    try {
+      const res = await fetch("/api/resumes/suggest-wording", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resumeId,
+          jobDescription: analysis.jobDescription,
+          suggestion: suggestions[i],
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setDraftError((prev) => ({
+          ...prev,
+          [i]: data.error || "Couldn't draft wording for this.",
+        }));
+        return;
+      }
+
+      setEditedText((prev) => ({ ...prev, [i]: data.wording }));
+      setPlacementHint((prev) => ({ ...prev, [i]: data.placement }));
+    } catch (err) {
+      console.error(err);
+      setDraftError((prev) => ({
+        ...prev,
+        [i]: "Something went wrong. Please try again.",
+      }));
+    } finally {
+      setDrafting((prev) => ({ ...prev, [i]: false }));
+    }
   }
 
   async function handleApply() {
@@ -75,7 +128,7 @@ export default function AnalysisResults({ analysis, resumeId }) {
     }
   }
 
-  function handleDownload() {
+  function handleDownloadText() {
     const blob = new Blob([tweakedResumeText], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -85,6 +138,39 @@ export default function AnalysisResults({ analysis, resumeId }) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  async function handleDownloadPdf() {
+    setDownloadError("");
+    setDownloadingPdf(true);
+    try {
+      const res = await fetch("/api/resumes/tweak/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tweakedResumeText }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setDownloadError(data.error || "Couldn't generate the PDF.");
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "tweaked-resume.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      setDownloadError("Something went wrong generating the PDF.");
+    } finally {
+      setDownloadingPdf(false);
+    }
   }
 
   async function handleCopy() {
@@ -155,8 +241,9 @@ export default function AnalysisResults({ analysis, resumeId }) {
         {resumeId && suggestions.length > 0 && (
           <p className="text-xs text-ink-secondary mb-3">
             Check the ones you want, edit the wording if you&apos;d like, then
-            apply. Nothing gets changed on your resume unless you approve it
-            here.
+            apply. Tap 💡 if you want AI to draft the exact line and tell you
+            where it goes. Nothing gets changed on your resume unless you
+            approve it here.
           </p>
         )}
 
@@ -166,17 +253,28 @@ export default function AnalysisResults({ analysis, resumeId }) {
               <li key={i} className="text-sm text-ink">
                 {resumeId ? (
                   <div className="space-y-2">
-                    <label className="flex items-start gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={!!approved[i]}
-                        onChange={() => toggleApproved(i)}
-                        className="mt-0.5 shrink-0"
-                      />
-                      <span>
-                        <FormattedText text={suggestion} />
-                      </span>
-                    </label>
+                    <div className="flex items-start gap-2">
+                      <label className="flex items-start gap-2 cursor-pointer flex-1">
+                        <input
+                          type="checkbox"
+                          checked={!!approved[i]}
+                          onChange={() => toggleApproved(i)}
+                          className="mt-0.5 shrink-0"
+                        />
+                        <span>
+                          <FormattedText text={suggestion} />
+                        </span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleDraftWording(i)}
+                        disabled={!!drafting[i]}
+                        title="Have AI draft this line and suggest where to add it"
+                        className="shrink-0 text-base leading-none px-1.5 py-1 rounded hover:bg-border disabled:opacity-50"
+                      >
+                        {drafting[i] ? "⏳" : "💡"}
+                      </button>
+                    </div>
 
                     {approved[i] && (
                       <div className="ml-6">
@@ -190,6 +288,16 @@ export default function AnalysisResults({ analysis, resumeId }) {
                           This exact wording is what will be applied — edit it
                           however you&apos;d like.
                         </p>
+                        {placementHint[i] && (
+                          <p className="text-xs text-ink-secondary mt-1">
+                            💡 <FormattedText text={placementHint[i]} />
+                          </p>
+                        )}
+                        {draftError[i] && (
+                          <p className="text-xs text-danger mt-1">
+                            {draftError[i]}
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -233,16 +341,30 @@ export default function AnalysisResults({ analysis, resumeId }) {
           <h3 className="text-sm font-semibold">Your tweaked resume</h3>
           <p className="text-xs text-ink-secondary">
             Only the changes you approved above were applied — everything else
-            from your original resume was left untouched.
+            from your original resume was left untouched. The PDF download uses
+            JDReady&apos;s clean template (we can&apos;t safely edit your
+            original file&apos;s exact font/layout in place), so double-check
+            formatting before sending it out.
           </p>
           <pre className="whitespace-pre-wrap text-sm text-ink bg-background border border-border rounded-md p-4 max-h-96 overflow-y-auto">
             {tweakedResumeText}
           </pre>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <button
               type="button"
-              onClick={handleDownload}
-              className="rounded-md bg-ink text-surface text-sm font-medium px-4 py-2 hover:opacity-90"
+              onClick={handleDownloadPdf}
+              disabled={downloadingPdf}
+              className="rounded-md bg-ink text-surface text-sm font-medium px-4 py-2 hover:opacity-90 disabled:opacity-50 inline-flex items-center gap-2"
+            >
+              {downloadingPdf && (
+                <span className="h-3.5 w-3.5 border-2 border-surface/40 border-t-surface rounded-full animate-spin" />
+              )}
+              {downloadingPdf ? "Generating PDF..." : "Download as PDF"}
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadText}
+              className="text-sm font-medium text-ink-secondary hover:text-ink underline"
             >
               Download as .txt
             </button>
@@ -254,6 +376,9 @@ export default function AnalysisResults({ analysis, resumeId }) {
               {copied ? "Copied!" : "Copy text"}
             </button>
           </div>
+          {downloadError && (
+            <p className="text-sm text-danger">{downloadError}</p>
+          )}
         </div>
       )}
     </div>

@@ -67,13 +67,14 @@ export async function POST(request) {
       tweakedResumeText = await tweakResumeText(resume.extractedText, edits);
     } catch (err) {
       console.error("Failed to tweak resume:", err);
-      return NextResponse.json(
-        {
-          error:
-            "Couldn't apply those changes — got an unreadable response. Please try again.",
-        },
-        { status: 502 },
-      );
+      // Surface which specific failure happened instead of one identical
+      // message for every cause — makes this self-diagnosing from the UI.
+      const message = err?.message?.includes("truncated")
+        ? "Your resume was too long for one pass — try applying fewer changes at once."
+        : err?.message?.includes("Empty response")
+          ? "The AI returned nothing. Please try again."
+          : "Couldn't apply those changes. Please try again.";
+      return NextResponse.json({ error: message }, { status: 502 });
     }
 
     return NextResponse.json(
