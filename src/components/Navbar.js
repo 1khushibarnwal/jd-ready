@@ -18,6 +18,7 @@ import {
   ChevronDown,
   Settings,
   MessageCircle,
+  HelpCircle,
 } from "lucide-react";
 import { logoutAction } from "@/app/actions";
 
@@ -99,6 +100,15 @@ export default function Navbar({ user }) {
 
         {/* Right side: theme toggle + user menu (desktop), hamburger (mobile) */}
         <div className="flex items-center gap-2">
+          <Link
+            href="/guide"
+            className="hidden sm:flex rounded-md p-2 text-ink-secondary hover:text-ink hover:bg-background transition-colors"
+            aria-label="How JDReady works"
+            title="How JDReady works"
+          >
+            <HelpCircle size={17} />
+          </Link>
+
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -186,6 +196,15 @@ export default function Navbar({ user }) {
           })}
 
           <div className="border-t border-border mt-2 pt-2">
+            <Link
+              href="/guide"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-medium text-ink-secondary"
+            >
+              <HelpCircle size={16} />
+              How JDReady works
+            </Link>
+
             <div className="px-3 py-1.5">
               <p className="text-sm font-medium text-ink truncate">
                 {user.name}

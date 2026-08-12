@@ -42,13 +42,16 @@ export default async function AboutPage() {
               </h2>
               <p className="mt-2 leading-7 text-ink-secondary">
                 Upload a resume and a job description and get a match score, the
-                skills you&apos;re missing, and what to fix. Don&apos;t have a
-                resume yet? Build one from scratch, or generate a starting point
-                from a job description and the skills you already know. From
-                there, JDReady can also draft a tailored cover letter and run
-                you through a mock interview for the role — all saved to your
-                account so you can revisit or compare across as many jobs as
-                you&apos;re applying to.
+                skills you&apos;re missing, and what to fix. From there, you
+                choose exactly which suggestions to apply — get AI help drafting
+                the wording and knowing where it goes, edit it your way, and
+                only then generate an updated resume. Don&apos;t have a resume
+                yet? Build one from scratch, or generate a starting point from a
+                job description and the skills you already know. JDReady can
+                also draft a tailored cover letter and run you through a mock
+                interview for the role — all saved to your account so you can
+                revisit or compare across as many jobs as you&apos;re applying
+                to.
               </p>
             </div>
 
@@ -60,9 +63,11 @@ export default async function AboutPage() {
                 JDReady won&apos;t invent work experience, employers, degrees,
                 or achievements you didn&apos;t give it — every AI-assisted
                 feature only ever reframes and organizes what you actually
-                provide. It&apos;s a tool for presenting your real skills and
-                experience as clearly as possible, not for fabricating a resume
-                that isn&apos;t true.
+                provide. And it won&apos;t edit your resume on its own: every
+                suggested change is opt-in, one by one, and nothing is applied
+                until you&apos;ve reviewed and approved it. It&apos;s a tool for
+                presenting your real skills and experience as clearly as
+                possible, not for fabricating a resume that isn&apos;t true.
               </p>
             </div>
 

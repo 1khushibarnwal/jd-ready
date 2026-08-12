@@ -21,7 +21,8 @@ const tools = [
       "Paste a job description",
       "Get an overall match score",
       "See matched and missing skills",
-      "Get suggestions for improvement",
+      "Review suggestions and choose which to apply",
+      "Get AI help wording each one, then download the result",
     ],
     href: "/dashboard",
     action: "Analyze your resume",
@@ -239,7 +240,7 @@ export default function GuidePage() {
                 </div>
 
                 {/* CTA */}
-                <div className="mt-6 pt-4 border-t border-border">
+                <div className="mt-auto pt-4 border-t border-border">
                   <Link
                     href={tool.href}
                     className="inline-flex items-center gap-2 text-sm font-medium text-ink transition-colors hover:text-ink-secondary"

@@ -6,6 +6,7 @@ import {
   Mail,
   MessageCircle,
   History,
+  Lightbulb,
 } from "lucide-react";
 
 export const features = [
@@ -14,6 +15,12 @@ export const features = [
     title: "Resume analysis",
     description:
       "Upload your resume and a job description to get an instant match score, along with the specific skills you're missing.",
+  },
+  {
+    icon: Lightbulb,
+    title: "AI-guided resume tweaks",
+    description:
+      "Review each suggestion one by one. Tap the lightbulb for AI-drafted wording and exactly where to add it, edit it however you like, then apply only what you approve — nothing changes without your OK.",
   },
   {
     icon: Layers,
@@ -70,6 +77,11 @@ export const steps = [
       "See a match score, the skills you already show, and what's missing.",
   },
   {
+    title: "Review & apply what you want",
+    description:
+      "Go through the suggestions one by one — get AI help wording each one and knowing where it fits, edit it your way, and only apply the ones you approve.",
+  },
+  {
     title: "Practice the interview",
     description:
       "Answer tailored questions and get feedback before the real thing.",
@@ -108,7 +120,11 @@ export const faqs = [
   },
   {
     q: "How is the match score calculated?",
-    a: "An AI model compares your resume's actual content against the job description and scores the overlap. It's a guide to help you improve your resume — not a guarantee of interview outcomes.",
+    a: "An AI model compares your resume's actual content against the job description and scores the overlap, using a fixed rubric and a consensus of multiple passes so the same resume and job description always produce the same score. It's a guide to help you improve your resume — not a guarantee of interview outcomes.",
+  },
+  {
+    q: "Will JDReady change my resume without asking me first?",
+    a: "No. Every suggestion is opt-in — you individually check the ones you want, and can edit the exact wording yourself or tap the lightbulb to have AI draft it and tell you where it belongs. Nothing is applied to your resume until you review it and click Apply.",
   },
   {
     q: "Can I choose what my resume looks like?",
