@@ -16,20 +16,35 @@ Your job:
    fill in, e.g. "Wrote unit and integration tests using [Jest/Mocha] to validate core API
    endpoints." Never silently make up a tool, number, or name that isn't in the resume.
 3. Say WHERE in the resume this line fits best — name the specific existing section or project
-   from THEIR resume (e.g. "Add as a new bullet under your 'Scribly' project" or "Add to your
-   Technical Skills section"), not a generic section name if a more specific one applies.
+   from THEIR resume (e.g. Add as a new bullet under your Scribly project, or Add to your
+   Technical Skills section), not a generic section name if a more specific one applies.
 
-Respond with ONLY a raw JSON object (no markdown fences, no preamble) in exactly this shape:
+Respond in EXACTLY this plain-text format, and nothing else — no JSON, no markdown, no code
+fences, no preamble or sign-off:
 
-{
-  "wording": <string — the single drafted line, plain text, no markdown>,
-  "placement": <string — one short sentence naming exactly where to add it>
-}`;
+WORDING: <the single drafted line, plain text, one line>
+PLACEMENT: <one short sentence naming exactly where to add it>
+
+Do not wrap either value in quotation marks. Keep WORDING to one line with no line breaks in it.`;
+
+// Guards against the model wrapping its answer in a markdown code fence
+// despite being told not to.
+function stripCodeFence(text) {
+  const trimmed = text.trim();
+  const fenceMatch = trimmed.match(/^```[a-zA-Z]*\n([\s\S]*?)\n```$/);
+  return fenceMatch ? fenceMatch[1].trim() : trimmed;
+}
 
 /**
  * Drafts one concrete, resume-ready line for a given suggestion, grounded in the candidate's
  * actual resume and the job description, plus a specific placement hint. Never invents facts
  * the resume doesn't support — uses bracketed placeholders instead.
+ *
+ * Deliberately uses a plain-text WORDING:/PLACEMENT: format instead of JSON: the drafted wording
+ * often naturally contains an apostrophe or quotation mark (project names, "candidate's", etc.),
+ * and LLMs frequently fail to escape those correctly inside a JSON string, which breaks
+ * JSON.parse. A simple text format sidesteps that failure mode entirely.
+ *
  * @param {string} resumeText
  * @param {string} jobDescription
  * @param {string} suggestion
@@ -44,7 +59,6 @@ export async function suggestBulletWording(
     model: "openai/gpt-oss-120b",
     temperature: 0.3,
     max_tokens: 512,
-    response_format: { type: "json_object" },
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       {
@@ -55,27 +69,29 @@ export async function suggestBulletWording(
   });
 
   const raw = completion.choices[0]?.message?.content;
-  if (!raw) {
+  if (!raw || !raw.trim()) {
     throw new Error("Empty response from Groq");
   }
 
-  let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch (err) {
+  const cleaned = stripCodeFence(raw);
+
+  const match = cleaned.match(
+    /WORDING:\s*([\s\S]*?)\s*PLACEMENT:\s*([\s\S]*)$/i,
+  );
+  if (!match) {
     console.error(
-      "Failed to JSON.parse Groq suggest-wording response. Raw content:",
+      "Suggest-wording response missing WORDING:/PLACEMENT: markers. Raw content:",
       raw,
     );
-    throw err;
-  }
-
-  if (!parsed.wording || typeof parsed.wording !== "string") {
     throw new Error("Malformed suggest-wording response from Groq");
   }
 
-  return {
-    wording: parsed.wording,
-    placement: parsed.placement ?? "",
-  };
+  const wording = match[1].trim();
+  const placement = match[2].trim();
+
+  if (!wording) {
+    throw new Error("Malformed suggest-wording response from Groq");
+  }
+
+  return { wording, placement };
 }
