@@ -8,6 +8,8 @@ Upload your resume and a job description, and get an instant match score, the sk
 
 - 🔐 **Authentication** — signup, login, logout via NextAuth (Credentials provider), plus forgot/reset password by email
 - 📄 **Resume analysis** — upload a resume (.pdf/.docx) and a job description, get an AI-scored match with matched skills, missing skills, and concrete suggestions
+- 🎯 **Stable, cached scoring** — each match score is computed from a multi-sample AI consensus (median of several passes, not a single roll of the dice) and cached per resume+job-description pair, so re-analyzing the same pair always returns the same result instantly
+- ✨ **AI-guided resume tweaks** — review each suggestion individually, optionally ask AI (💡) to draft the exact wording and tell you where it belongs, edit it however you want, then apply only what you approve — nothing is changed on your resume without explicit, per-suggestion confirmation. Download the result as a formatted PDF or plain text
 - 📊 **Compare multiple jobs** — paste several job descriptions at once and see, ranked, which role your resume fits best
 - 🧱 **ATS-friendly resume builder** — no resume yet? Build one with a guided form, pick from multiple templates (Minimal, Modern, Compact), and export a clean, single-column PDF that parses reliably
 - 🧩 **Generate from a job description** — paste a JD and the skills you already know, get a tailored summary, prioritized skills, and honest strength bullets to start from, without inventing experience you don't have
@@ -68,6 +70,10 @@ Upload your resume and a job description, and get an instant match score, the sk
 
 ## Project Structure
 
+---
+
+## Project Structure
+
 ```
 jd-ready/
 ├── src/
@@ -93,6 +99,9 @@ jd-ready/
 │   │   │   ├── interview/
 │   │   │   ├── history/
 │   │   │   ├── resumes/
+│   │   │   │   ├── tweak/          # Apply approved suggestions to resume text
+│   │   │   │   │   └── download/   # Render the tweaked resume as a PDF
+│   │   │   │   └── suggest-wording/ # AI drafts exact wording + placement per suggestion
 │   │   │   ├── account/
 │   │   │   ├── signup/
 │   │   │   ├── forgot-password/
@@ -153,6 +162,9 @@ jd-ready/
 │   │   ├── cloudinary.js
 │   │   ├── email.js
 │   │   ├── analyzeResume.js
+│   │   ├── tweakResume.js          # Applies user-approved edits to resume text
+│   │   ├── suggestWording.js       # Drafts grounded wording + placement per suggestion
+│   │   ├── parseResumeTextToDraft.js # Restructures tweaked text for PDF export
 │   │   ├── generateResumeFromJD.js
 │   │   ├── interviewPrep.js
 │   │   ├── resumeParser.js
@@ -169,14 +181,12 @@ jd-ready/
 │   │
 │   ├── auth.js
 │   ├── auth.config.js
-│   └── middleware.js
+│   └── proxy.js
 │
 ├── public/
 ├── package.json
 └── README.md
 ```
-
----
 
 ---
 
@@ -240,7 +250,6 @@ JDReady is a single Next.js app, so it is deployed as one service on Vercel: [ht
 
 Some improvements planned for future versions of JDReady include:
 
-- 🤖 **AI resume rewriting** — rewrite resume bullet points with stronger action verbs and quantify achievements where possible
 - 🎯 **Role-specific resume optimization** — generate customized resume versions for different job roles
 - 📑 **Additional resume templates** — expand the builder with more ATS-friendly layouts and customization options
 - 🌍 **LinkedIn & portfolio analysis** — import profile information and provide suggestions to improve online presence
@@ -256,7 +265,7 @@ Some improvements planned for future versions of JDReady include:
 ## Security Notes
 
 - Passwords are hashed with bcrypt before storage; the raw password is never persisted.
-- Sessions are handled by NextAuth; protected routes (`/dashboard`, `/history`, `/builder`, `/cover-letter`, `/compare`, `/account`, `/interview-prep`) are gated in `middleware.js` and redirect unauthenticated users to `/login`.
+- Sessions are handled by NextAuth; protected routes (`/dashboard`, `/history`, `/builder`, `/cover-letter`, `/compare`, `/account`, `/interview-prep`) are gated in `proxy.js` and redirect unauthenticated users to `/login`.
 - All resumes, analyses, cover letters, and interview sessions are scoped to the authenticated user — no cross-account access.
 - Profile updates (name/email) are validated and checked for email uniqueness before saving; the session refreshes immediately so no re-login is needed.
 - Password reset always returns a generic success message regardless of whether the email exists, to avoid leaking registered emails, and reset tokens are stored hashed with an expiry.
