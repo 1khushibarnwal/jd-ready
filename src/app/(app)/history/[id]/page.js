@@ -18,13 +18,26 @@ export default async function HistoryDetailPage({ params }) {
 
   // Scope the query to the logged-in user so nobody can view someone else's
   // analysis just by guessing/incrementing an id in the URL.
-  const analysis = await Analysis.findOne({ _id: id, user: session.user.id })
+  const analysisDoc = await Analysis.findOne({
+    _id: id,
+    user: session.user.id,
+  })
     .populate("resume")
     .lean();
 
-  if (!analysis) {
+  if (!analysisDoc) {
     notFound();
   }
+
+  // `.lean()` still leaves MongoDB ObjectId/Date instances in the doc (and in
+  // the populated `resume` sub-document), which aren't plain serializable
+  // objects. Server -> Client Component props must be plain data, and
+  // AnalysisResults is a client component ("use client"), so passing the raw
+  // lean doc straight through throws "Only plain objects can be passed...".
+  // ObjectId/Date both define toJSON(), so a stringify/parse round-trip
+  // converts everything (including nested fields in `resume`) to plain
+  // strings in one shot.
+  const analysis = JSON.parse(JSON.stringify(analysisDoc));
 
   return (
     <div className="max-w-2xl mx-auto w-full px-4 py-12">
@@ -66,7 +79,7 @@ export default async function HistoryDetailPage({ params }) {
         </p>
       </details>
 
-      <AnalysisResults analysis={analysis} />
+      <AnalysisResults analysis={analysis} resumeId={analysis.resume?._id} />
     </div>
   );
 }
