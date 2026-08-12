@@ -108,7 +108,7 @@ export default function ResumeAnalyzer() {
           </a>
         )}
 
-        <AnalysisResults analysis={analysis} />
+        <AnalysisResults analysis={analysis} resumeId={resume?.resumeId} />
       </div>
     );
   }

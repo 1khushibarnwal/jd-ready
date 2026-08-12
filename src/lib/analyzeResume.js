@@ -31,6 +31,10 @@ async function runOnce(resumeText, jobDescription) {
   const completion = await groq.chat.completions.create({
     model: "openai/gpt-oss-120b",
     temperature: 0,
+    // Skills/suggestions lists can run long for detailed resumes+JDs — give
+    // this enough headroom that a thorough answer doesn't get cut off
+    // mid-JSON (which would otherwise throw on JSON.parse below).
+    max_tokens: 3072,
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
@@ -42,11 +46,26 @@ async function runOnce(resumeText, jobDescription) {
   });
 
   const raw = completion.choices[0]?.message?.content;
+  const finishReason = completion.choices[0]?.finish_reason;
+
   if (!raw) {
     throw new Error("Empty response from Groq");
   }
 
-  const parsed = JSON.parse(raw); // let caller catch JSON.parse errors
+  if (finishReason === "length") {
+    throw new Error("Groq response was truncated (hit max_tokens)");
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (err) {
+    console.error(
+      "Failed to JSON.parse Groq analyze response. Raw content:",
+      raw,
+    );
+    throw err;
+  }
 
   return {
     matchScore: parsed.matchScore ?? 0,
@@ -61,14 +80,38 @@ async function runOnce(resumeText, jobDescription) {
  * Runs the resume-vs-JD analysis multiple times (self-consistency) and returns
  * a single stable result: the median matchScore, paired with the qualitative
  * fields from whichever run landed closest to that median.
+ *
+ * Uses Promise.allSettled rather than Promise.all: a single transient failure
+ * (an occasional bad/truncated response from one of the SAMPLES calls) should
+ * not sink the whole analysis when the other calls succeeded fine. Only fails
+ * outright if every single sample failed.
+ *
  * @param {string} resumeText
  * @param {string} jobDescription
  * @returns {Promise<{matchScore:number, matchedSkills:string[], missingSkills:string[], suggestions:string[], summary:string}>}
  */
 export async function analyzeResumeAgainstJD(resumeText, jobDescription) {
-  const results = await Promise.all(
+  const settled = await Promise.allSettled(
     Array.from({ length: SAMPLES }, () => runOnce(resumeText, jobDescription)),
   );
+
+  const results = settled
+    .filter((s) => s.status === "fulfilled")
+    .map((s) => s.value);
+
+  if (results.length === 0) {
+    // Every sample failed — surface the first underlying error so the route's
+    // catch block/logs show the real cause instead of a generic message.
+    const firstFailure = settled.find((s) => s.status === "rejected");
+    throw firstFailure?.reason ?? new Error("All analysis attempts failed");
+  }
+
+  const failedCount = settled.length - results.length;
+  if (failedCount > 0) {
+    console.warn(
+      `${failedCount}/${SAMPLES} analysis samples failed; proceeding with the ${results.length} that succeeded.`,
+    );
+  }
 
   const sortedScores = results.map((r) => r.matchScore).sort((a, b) => a - b);
   const medianScore = sortedScores[Math.floor(sortedScores.length / 2)];

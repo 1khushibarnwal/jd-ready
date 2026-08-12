@@ -73,11 +73,28 @@ export async function POST(request) {
       resume: resume._id,
       jobDescription,
       ...result,
+    }).catch((err) => {
+      // Distinguish "the LLM call worked but saving the result failed" from
+      // every other kind of failure, so logs (and eventually the user-facing
+      // message) point at the right thing instead of a single vague bucket.
+      console.error("Failed to save analysis to MongoDB:", err);
+      throw new Error("SAVE_FAILED");
     });
 
     return NextResponse.json({ analysis, cached: false }, { status: 201 });
   } catch (error) {
     console.error("Analysis error:", error);
+
+    if (error?.message === "SAVE_FAILED") {
+      return NextResponse.json(
+        {
+          error:
+            "Your analysis was generated but couldn't be saved. Please try again.",
+        },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json(
       { error: "Something went wrong analyzing your resume." },
       { status: 500 },
