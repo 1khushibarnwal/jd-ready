@@ -70,10 +70,6 @@ Upload your resume and a job description, and get an instant match score, the sk
 
 ## Project Structure
 
----
-
-## Project Structure
-
 ```
 jd-ready/
 ├── src/
