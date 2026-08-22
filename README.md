@@ -185,6 +185,13 @@ jd-ready/
 ```
 
 ---
+## Testing
+
+JDReady uses **Vitest** for automated testing of its core application logic.
+
+The current test suite focuses on deterministic behavior in the application's AI-powered utilities while mocking external AI dependencies. This keeps the tests fast, reproducible, and independent of live Groq API responses.
+
+---
 
 ## Getting Started Locally
 
