@@ -191,6 +191,16 @@ JDReady uses **Vitest** for automated testing of its core application logic.
 
 The current test suite focuses on deterministic behavior in the application's AI-powered utilities while mocking external AI dependencies. This keeps the tests fast, reproducible, and independent of live Groq API responses.
 
+### Current Test Coverage
+
+The test suite currently covers the following core utilities:
+
+- `analyzeResume.js` — tests resume/JD analysis logic, including multiple AI responses, failed attempts, score aggregation, and result handling.
+- `generateResumeFromJD.js` — tests resume generation and fallback behavior when generated fields are missing.
+- `parseResumeTextToDraft.js` — tests conversion of resume text into a normalized structured resume draft.
+- `suggestWording.js` — tests parsing and handling of AI-generated wording suggestions.
+- `tweakResume.js` — tests resume editing behavior, validation, response parsing, and failure cases.
+
 ---
 
 ## Getting Started Locally
