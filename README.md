@@ -201,6 +201,26 @@ The test suite currently covers the following core utilities:
 - `suggestWording.js` — tests parsing and handling of AI-generated wording suggestions.
 - `tweakResume.js` — tests resume editing behavior, validation, response parsing, and failure cases.
 
+### Testing Approach
+
+The tests follow the **Arrange → Act → Assert** pattern:
+
+1. **Arrange** — prepare inputs and mock external dependencies.
+2. **Act** — execute the function being tested.
+3. **Assert** — verify that the returned result or behavior matches the expected outcome.
+
+Because these utilities communicate with the Groq API, the API is mocked during testing rather than making real network requests.
+
+```text
+Test Input
+    ↓
+Mocked Groq Response
+    ↓
+JDReady Utility
+    ↓
+Expected Result
+```
+
 ---
 
 ## Getting Started Locally
