@@ -4,6 +4,14 @@ Upload your resume and a job description, and get an instant match score, the sk
 
 ---
 
+## Live Demo
+
+🚀 **[Try JDReady](https://jd-ready.vercel.app)**
+
+> Analyze your resume against a job description, generate tailored resume content, practice interviews, and manage your job-search history in one place.
+
+---
+
 ## Features
 
 - 🔐 **Authentication** — signup, login, logout via NextAuth (Credentials provider), plus forgot/reset password by email
