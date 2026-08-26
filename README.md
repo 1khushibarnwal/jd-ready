@@ -229,6 +229,22 @@ JDReady Utility
 Expected Result
 ```
 
+## Continuous Integration
+
+GitHub Actions runs the project's linting, tests, and production build checks on pushes and pull requests.
+
+```text
+Push / Pull Request
+        ↓
+   GitHub Actions
+        ↓
+      ESLint
+        ↓
+      Vitest
+        ↓
+   Next.js Build
+        ↓
+    ✓ / ✗
 ---
 
 ## Getting Started Locally
