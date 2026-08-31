@@ -28,7 +28,7 @@ Upload your resume and a job description, and get an instant match score, the sk
 - 👤 **Account settings** — edit profile, and permanently delete your account and all associated data on request
 - 🌗 **Light/dark theme** — persists across sessions, with a toggle on both the landing page and the authenticated app
 - 🛟 **Resilient by design** — friendly loading states during navigation and data fetches, an offline/reconnect banner, and polite custom error and 404 pages instead of framework defaults
-
+- 🔎 Custom 404 page — friendly fallback for any unmatched route
 ---
 
 ## Tech Stack
