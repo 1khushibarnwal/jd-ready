@@ -4,6 +4,14 @@ Upload your resume and a job description, and get an instant match score, the sk
 
 ---
 
+## Live Demo
+
+🚀 **[Try JDReady](https://jd-ready.vercel.app)**
+
+> Analyze your resume against a job description, generate tailored resume content, practice interviews, and manage your job-search history in one place.
+
+---
+
 ## Features
 
 - 🔐 **Authentication** — signup, login, logout via NextAuth (Credentials provider), plus forgot/reset password by email
@@ -20,7 +28,7 @@ Upload your resume and a job description, and get an instant match score, the sk
 - 👤 **Account settings** — edit profile, and permanently delete your account and all associated data on request
 - 🌗 **Light/dark theme** — persists across sessions, with a toggle on both the landing page and the authenticated app
 - 🛟 **Resilient by design** — friendly loading states during navigation and data fetches, an offline/reconnect banner, and polite custom error and 404 pages instead of framework defaults
-
+- 🔎 Custom 404 page — friendly fallback for any unmatched route
 ---
 
 ## Tech Stack
@@ -65,10 +73,6 @@ Upload your resume and a job description, and get an instant match score, the sk
 | `lucide-react`        | Icon set used throughout the UI                                      |
 | `next-themes`         | Light/dark theme toggle with persistence                             |
 | `tailwindcss`         | Utility-first CSS framework                                          |
-
----
-
-## Project Structure
 
 ---
 
@@ -188,6 +192,60 @@ jd-ready/
 └── README.md
 ```
 
+---
+## Testing
+
+JDReady uses **Vitest** for automated testing of its core application logic.
+
+The current test suite focuses on deterministic behavior in the application's AI-powered utilities while mocking external AI dependencies. This keeps the tests fast, reproducible, and independent of live Groq API responses.
+
+### Current Test Coverage
+
+The test suite currently covers the following core utilities:
+
+- `analyzeResume.js` — tests resume/JD analysis logic, including multiple AI responses, failed attempts, score aggregation, and result handling.
+- `generateResumeFromJD.js` — tests resume generation and fallback behavior when generated fields are missing.
+- `parseResumeTextToDraft.js` — tests conversion of resume text into a normalized structured resume draft.
+- `suggestWording.js` — tests parsing and handling of AI-generated wording suggestions.
+- `tweakResume.js` — tests resume editing behavior, validation, response parsing, and failure cases.
+
+### Testing Approach
+
+The tests follow the **Arrange → Act → Assert** pattern:
+
+1. **Arrange** — prepare inputs and mock external dependencies.
+2. **Act** — execute the function being tested.
+3. **Assert** — verify that the returned result or behavior matches the expected outcome.
+
+Because these utilities communicate with the Groq API, the API is mocked during testing rather than making real network requests.
+
+```text
+Test Input
+    ↓
+Mocked Groq Response
+    ↓
+JDReady Utility
+    ↓
+Expected Result
+```
+
+### Continuous Integration
+
+GitHub Actions runs the project's linting, tests, and production build checks on pushes and pull requests.
+
+```text
+Push / Pull Request
+        ↓
+   GitHub Actions
+        ↓
+      ESLint
+        ↓
+      Vitest
+        ↓
+   Next.js Build
+        ↓
+    ✓ / ✗
+```
 ---
 
 ## Getting Started Locally
