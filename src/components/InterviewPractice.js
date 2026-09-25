@@ -44,6 +44,10 @@ export default function InterviewPractice({ resumes, initialSessions }) {
   const [continuing, setContinuing] = useState(false);
   const [continueError, setContinueError] = useState("");
 
+  const [followUpInput, setFollowUpInput] = useState("");
+  const [followUpLoading, setFollowUpLoading] = useState(false);
+  const [followUpError, setFollowUpError] = useState("");
+
   async function handleStart(e) {
     e.preventDefault();
     setError("");
@@ -79,6 +83,8 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       setCurrentIndex(0);
       setAnswerText("");
       setCurrentFeedback(null);
+      setFollowUpInput("");
+      setFollowUpError("");
       setRound(1);
       setStage("session");
       setPastSessions((prev) => [data.session, ...prev]);
@@ -142,6 +148,68 @@ export default function InterviewPractice({ resumes, initialSessions }) {
     }
   }
 
+  async function handleFollowUpSend(e) {
+    e.preventDefault();
+    const message = followUpInput.trim();
+    if (!message || followUpLoading) return;
+
+    setFollowUpError("");
+    setFollowUpLoading(true);
+
+    // Optimistically show the user's message.
+    setCurrentFeedback((prev) => ({
+      ...prev,
+      followUps: [
+        ...(prev.followUps || []),
+        { role: "user", content: message },
+      ],
+    }));
+    setFollowUpInput("");
+
+    try {
+      const res = await fetch(`/api/interview/${activeSession._id}/followup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questionIndex: currentIndex, message }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setFollowUpError(data.error || "Something went wrong");
+        return;
+      }
+
+      setCurrentFeedback((prev) => {
+        const nextFollowUps = [
+          ...(prev.followUps || []),
+          { role: "assistant", content: data.reply },
+        ];
+
+        setActiveSession((prevSession) => {
+          const nextAnswers = [...(prevSession.answers || [])];
+          const existingIndex = nextAnswers.findIndex(
+            (a) => a.questionIndex === currentIndex,
+          );
+          if (existingIndex !== -1) {
+            nextAnswers[existingIndex] = {
+              ...nextAnswers[existingIndex],
+              followUps: nextFollowUps,
+            };
+          }
+          return { ...prevSession, answers: nextAnswers };
+        });
+
+        return { ...prev, followUps: nextFollowUps };
+      });
+    } catch (err) {
+      console.error(err);
+      setFollowUpError("Something went wrong. Please try again.");
+    } finally {
+      setFollowUpLoading(false);
+    }
+  }
+
   function handleNext() {
     const isLastOfKnownBatch =
       currentIndex === activeSession.questions.length - 1;
@@ -154,6 +222,8 @@ export default function InterviewPractice({ resumes, initialSessions }) {
     setCurrentIndex((i) => i + 1);
     setAnswerText("");
     setCurrentFeedback(null);
+    setFollowUpInput("");
+    setFollowUpError("");
   }
 
   async function handleContinueRound() {
@@ -184,6 +254,8 @@ export default function InterviewPractice({ resumes, initialSessions }) {
       setCurrentIndex(startIndex);
       setAnswerText("");
       setCurrentFeedback(null);
+      setFollowUpInput("");
+      setFollowUpError("");
       setStage("session");
     } catch (err) {
       console.error(err);
@@ -203,6 +275,8 @@ export default function InterviewPractice({ resumes, initialSessions }) {
     setCurrentIndex(0);
     setAnswerText("");
     setCurrentFeedback(null);
+    setFollowUpInput("");
+    setFollowUpError("");
     setJobDescription("");
     setRound(1);
     setContinueError("");
@@ -340,6 +414,51 @@ export default function InterviewPractice({ resumes, initialSessions }) {
                   </p>
                 </div>
               )}
+
+              <div className="pt-4 border-t border-border">
+                {currentFeedback.followUps?.length > 0 && (
+                  <div className="space-y-2 mb-3 max-h-64 overflow-y-auto pr-1">
+                    {currentFeedback.followUps.map((m, i) => (
+                      <div
+                        key={i}
+                        className={`text-sm rounded-md px-3 py-2 max-w-[90%] ${
+                          m.role === "user"
+                            ? "bg-ink text-surface ml-auto"
+                            : "border border-border text-ink"
+                        }`}
+                      >
+                        <FormattedText text={m.content} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {followUpLoading && (
+                  <p className="text-sm text-ink-secondary mb-3">Thinking...</p>
+                )}
+
+                {followUpError && (
+                  <p className="text-sm text-danger mb-2">{followUpError}</p>
+                )}
+
+                <form onSubmit={handleFollowUpSend} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={followUpInput}
+                    onChange={(e) => setFollowUpInput(e.target.value)}
+                    disabled={followUpLoading}
+                    placeholder="Ask a follow-up about this feedback..."
+                    className="flex-1 rounded-md border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ink disabled:opacity-60"
+                  />
+                  <button
+                    type="submit"
+                    disabled={followUpLoading || !followUpInput.trim()}
+                    className="rounded-md border border-border text-ink text-sm font-medium px-4 py-2 hover:bg-border/30 disabled:opacity-50"
+                  >
+                    Ask
+                  </button>
+                </form>
+              </div>
 
               <button
                 onClick={handleNext}

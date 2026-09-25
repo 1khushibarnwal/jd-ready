@@ -34,6 +34,62 @@ Write every string field in plain text only — no markdown, no asterisks, no bo
 markers, no headers, no bullet characters. Be specific and grounded in the actual answer
 given and the resume provided. Do not invent experience the candidate doesn't have.`;
 
+const FOLLOW_UP_SYSTEM_PROMPT = `You are an interview coach helping a candidate understand feedback on ONE
+specific interview answer. Stay strictly scoped to this question, this answer, and the
+feedback already given — do not introduce new topics or invent details about the
+candidate's background that weren't in their resume or answer.
+
+Be concise (2-4 short paragraphs max) and concrete: point to specific phrases to change
+or add, not generic advice like "be more confident". Write in plain text only — no
+markdown headers, no asterisks/bold markers, no bullet characters (use plain sentences
+or "-" for lists).`;
+
+const MAX_FOLLOW_UP_HISTORY = 8; // turns, not messages — keeps this a quick clarification, not an open chat
+const MAX_FOLLOW_UP_MESSAGE_LENGTH = 2000;
+
+export async function askInterviewFollowUp({
+  question,
+  resumeText,
+  jobDescription,
+  answerText,
+  feedback,
+  history = [],
+  message,
+}) {
+  const trimmedHistory = history.slice(-MAX_FOLLOW_UP_HISTORY * 2).map((m) => ({
+    role: m.role === "assistant" ? "assistant" : "user",
+    content: String(m.content || "").slice(0, MAX_FOLLOW_UP_MESSAGE_LENGTH),
+  }));
+
+  const contextMessage = [
+    `INTERVIEW QUESTION:\n${question}`,
+    `JOB DESCRIPTION:\n${jobDescription}`,
+    `RESUME TEXT:\n${resumeText}`,
+    `CANDIDATE'S ANSWER:\n${answerText}`,
+    feedback
+      ? `FEEDBACK ALREADY GIVEN:\nScore: ${feedback.score}/100\nStrengths: ${(feedback.strengths || []).join("; ")}\nImprovements: ${(feedback.improvements || []).join("; ")}`
+      : "",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  const completion = await groq.chat.completions.create({
+    model: "openai/gpt-oss-120b",
+    temperature: 0.4,
+    messages: [
+      { role: "system", content: FOLLOW_UP_SYSTEM_PROMPT },
+      { role: "user", content: contextMessage },
+      ...trimmedHistory,
+      { role: "user", content: message },
+    ],
+  });
+
+  const reply = completion.choices[0]?.message?.content?.trim();
+  if (!reply) throw new Error("Empty response from Groq");
+
+  return reply;
+}
+
 export async function generateInterviewQuestions(
   resumeText,
   jobDescription,

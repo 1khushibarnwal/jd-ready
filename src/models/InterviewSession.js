@@ -1,5 +1,13 @@
 import mongoose from "mongoose";
 
+const FollowUpSchema = new mongoose.Schema(
+  {
+    role: { type: String, enum: ["user", "assistant"], required: true },
+    content: { type: String, required: true },
+  },
+  { _id: false },
+);
+
 const AnswerSchema = new mongoose.Schema(
   {
     questionIndex: { type: Number, required: true },
@@ -8,6 +16,7 @@ const AnswerSchema = new mongoose.Schema(
     strengths: [{ type: String }],
     improvements: [{ type: String }],
     modelAnswer: { type: String },
+    followUps: [FollowUpSchema], // scoped chat asking about this specific feedback
   },
   { _id: false },
 );
